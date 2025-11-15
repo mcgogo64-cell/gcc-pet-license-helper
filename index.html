@@ -1,0 +1,1914 @@
+<!-- Chosen Palette: Calm Harmony (Sakin Uyum) -->
+<!-- Application Structure Plan: Raporu doğrudan yansıtmak yerine, kullanıcı (evcil hayvan sahibi) için görev odaklı bir SPA tasarlandı. Ana yapı, bir kahraman bölümü ve 4 ana tematik bölüme (Süreç Haritası, Ülke Rehberi, Veriler, SSS) dayalıdır. Neden: Kullanıcılar stresli ve karmaşık bir süreçle karşı karşıyalar. Doğrusal bir rapor yerine, ihtiyaç duydukları bilgiye hızla atlamalarını sağlayan (sticky nav + bölümler) ve süreci adım adım (Süreç Haritası) veya ülkeye göre (Ülke Rehberi) filtrelemelerine olanak tanıyan bir yapı daha kullanışlıdır. Veri bölümü, zaman ve bütçe planlaması için bağlam sağlar. Bu yapı, karmaşık bilgiyi sindirilebilir, etkileşimli parçalara bölerek kullanıcı yükünü azaltır. -->
+<!-- Visualization & Content Choices: 
+- Rapor Bilgisi: Ülkelere göre ithalat hazırlık süreleri (Süre) -> Amaç: Karşılaştırma/Planlama -> Yöntem: Bar Chart (Chart.js) -> Etkileşim: Hover (Tooltip) -> Gerekçe: Ülkeler arası zaman farklarını net gösterir.
+- Rapor Bilgisi: Toplam maliyetin bileşenleri (Maliyet %) -> Amaç: Bilgilendirme/Bütçeleme -> Yöntem: Donut Chart (Chart.js) -> Etkileşim: Hover (Tooltip) -> Gerekçe: Bütçenin nereye harcandığını oransal olarak gösterir.
+- Rapor Bilgisi: Başvurularda sık yapılan hatalar (Hata %) -> Amaç: Uyarı/Önlem -> Yöntem: Pie Chart (Chart.js) -> Etkileşim: Hover (Tooltip) -> Gerekçe: En kritik risk alanlarını vurgular.
+- Rapor Bilgisi: Adım adım ithalat süreci (Süreç Akışı) -> Amaç: Rehberlik/Organizasyon -> Yöntem: HTML/Tailwind Akış Şeması (Grid) -> Etkileşim: Tıklama (JS ile `toggle` detay) -> Gerekçe: Karmaşık süreci 6 basit, yönetilebilir adıma böler. NO SVG/Mermaid.
+- Rapor Bilgisi: Ülke bazlı kurallar (Kural Farklılıkları) -> Amaç: Filtreleme/Bilgilendirme -> Yöntem: `Select` Dropdown + JS ile güncellenen Bilgi Kartı -> Etkileşim: `change` event'i -> Gerekçe: Kullanıcının sadece ilgili olduğu ülkenin detaylarını görmesini sağlar, bilgi kirliliğini önler.
+-->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Simplify your pet relocation or license renewal process for Gulf (GCC) countries. Step-by-step guides, country-specific info, and data analysis for UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, and Oman.">
+    <meta name="keywords" content="GCC pet license, pet relocation, UAE pet import, Saudi Arabia pet, Qatar pet license, Kuwait pet import, Bahrain pet rules, Oman pet regulations, pet documentation, pet vaccination, pet microchip, pet import costs">
+    <meta name="author" content="GCC Pet License Helper">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="language" content="English, Arabic, Hindi">
+    <meta name="revisit-after" content="7 days">
+    <link rel="canonical" href="https://your-domain.vercel.app/">
+    
+    <!-- Google Site Verification -->
+    <meta name="google-site-verification" content="eaea13b62532cdce">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://your-domain.vercel.app/">
+    <meta property="og:title" content="GCC Pet License Assistant - Simplify Your Pet Relocation">
+    <meta property="og:description" content="Complete guide for pet relocation and license renewal in GCC countries (UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, Oman). Get step-by-step instructions, costs, and timelines.">
+    <meta property="og:image" content="https://your-domain.vercel.app/og-image.jpg">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="ar_AE">
+    <meta property="og:locale:alternate" content="hi_IN">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://your-domain.vercel.app/">
+    <meta name="twitter:title" content="GCC Pet License Assistant - Simplify Your Pet Relocation">
+    <meta name="twitter:description" content="Complete guide for pet relocation and license renewal in GCC countries. Step-by-step instructions, costs, and timelines.">
+    <meta name="twitter:image" content="https://your-domain.vercel.app/og-image.jpg">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#0D9488">
+    <meta name="msapplication-TileColor" content="#0D9488">
+    
+    <title data-key="title">GCC Pet License Assistant - Pet Relocation & Import Guide</title>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4429391480566285"
+     crossorigin="anonymous"></script>
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "GCC Pet License Assistant",
+      "url": "https://your-domain.vercel.app/",
+      "description": "Complete guide for pet relocation and license renewal in GCC countries",
+      "inLanguage": ["en", "ar", "hi"],
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://your-domain.vercel.app/#search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "GCC Pet License Helper",
+        "description": "Helping pet owners navigate GCC pet import regulations"
+      }
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How long does pet import to GCC countries take?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The pet import process varies by country: UAE typically takes 8-12 weeks, Saudi Arabia 10-14 weeks, Qatar 6-10 weeks, Kuwait 8-12 weeks, Bahrain 6-8 weeks, and Oman 8-10 weeks."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What are the main costs for pet relocation to GCC?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Main costs include veterinary services (30-40%), documentation and permits (20-25%), microchipping and tracking (15-20%), transportation (20-25%), and quarantine fees (5-10%)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need to quarantine my pet in GCC countries?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Quarantine requirements vary by country and depend on your pet's origin country, vaccination status, and documentation. Some countries may waive quarantine with proper documentation."
+          }
+        }
+      ]
+    }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;600;700&family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans', 'Noto Sans Arabic', sans-serif;
+            background-color: #FAF8F5;
+            color: #333;
+        }
+        [lang="ar"] body, [lang="ar"] h1, [lang="ar"] h2, [lang="ar"] h3, [lang="ar"] h4 {
+            font-family: 'Noto Sans Arabic', sans-serif;
+        }
+        [lang="hi"] body, [lang="hi"] h1, [lang="hi"] h2, [lang="hi"] h3, [lang="hi"] h4 {
+            font-family: 'Noto Sans', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s;
+        }
+        .nav-link:hover {
+            color: #3B82F6;
+        }
+        .process-card, .faq-item {
+            cursor: pointer;
+        }
+        .process-card-content, .faq-cevap {
+            transition: max-height 0.5s ease-in-out;
+        }
+        
+        [dir="rtl"] .process-card-baslik,
+        [dir="rtl"] .faq-soru {
+            flex-direction: row-reverse;
+            text-align: right;
+        }
+        [dir="rtl"] .process-card-content,
+        [dir="rtl"] .faq-cevap {
+            text-align: right;
+        }
+        [dir="rtl"] #ulke-detay-konteyner h3,
+        [dir="rtl"] #ulke-detay-konteyner h4,
+        [dir="rtl"] #ulke-detay-konteyner p {
+            text-align: right;
+        }
+        [dir="rtl"] .space-x-4 > :not([hidden]) ~ :not([hidden]) {
+            --tw-space-x-reverse: 1;
+            margin-right: 1rem;
+            margin-left: 0;
+        }
+        @media (min-width: 768px) {
+            [dir="rtl"] .md\:space-x-8 > :not([hidden]) ~ :not([hidden]) {
+                --tw-space-x-reverse: 1;
+                margin-right: 2rem;
+                margin-left: 0;
+            }
+        }
+        .lang-switcher {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.3s;
+        }
+        .lang-switcher.active {
+            background-color: #0D9488;
+            color: white;
+            font-weight: 600;
+        }
+        .lang-switcher:not(.active):hover {
+            background-color: #F0F9FF;
+        }
+        @media (max-width: 767px) {
+            #lang-selector {
+                position: static;
+                transform: none;
+            }
+            .lang-switcher {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+        .popup-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            position: relative;
+            animation: popupSlideIn 0.3s ease-out;
+        }
+        @keyframes popupSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .popup-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s;
+        }
+        .popup-close:hover {
+            color: #000;
+        }
+        .popup-hidden {
+            display: none;
+        }
+        .paypal-button {
+            display: inline-block;
+            background-color: #0070ba;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: background-color 0.3s;
+        }
+        .paypal-button:hover {
+            background-color: #005ea6;
+        }
+    </style>
+</head>
+<body class="bg-amber-50 text-gray-800">
+
+    <!-- Support Pop-up -->
+    <div id="support-popup" class="popup-overlay popup-hidden">
+        <div class="popup-content">
+            <button class="popup-close" onclick="closeSupportPopup()" aria-label="Close">×</button>
+            <h3 class="text-2xl font-bold text-teal-700 mb-4" data-key="popup_title">Support This Project</h3>
+            <p class="text-gray-700 mb-4" data-key="popup_message">
+                If you found this resource helpful, please consider supporting the project. Your contribution helps maintain and improve this free service.
+            </p>
+            <p class="text-sm text-gray-600 mb-4">
+                <span data-key="popup_email">PayPal:</span> <strong>mc.gogo64@gmx.de</strong>
+            </p>
+            <a href="https://www.paypal.com/myaccount/transfer/send/requestFlow?tileName=request_money&recipient=mc.gogo64@gmx.de" target="_blank" rel="noopener noreferrer" class="paypal-button" data-key="popup_button">
+                Donate via PayPal
+            </a>
+            <p class="text-xs text-gray-500 mt-2">
+                <span data-key="popup_note">Or send directly to:</span> <strong>mc.gogo64@gmx.de</strong>
+            </p>
+            <button onclick="closeSupportPopup()" class="block mt-4 text-sm text-gray-500 hover:text-gray-700" data-key="popup_close">
+                Maybe later
+            </button>
+        </div>
+    </div>
+
+    <!-- Header & Navigasyon -->
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">
+        <nav class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 text-gray-700 hover:text-teal-600" aria-label="Toggle menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex flex-grow justify-center items-center space-x-4 lg:space-x-8">
+                    <a href="#home" class="nav-link text-sm lg:text-base font-medium text-gray-700 hover:text-blue-600" data-key="nav_home">Home</a>
+                    <a href="#surec" class="nav-link text-sm lg:text-base font-medium text-gray-700 hover:text-blue-600" data-key="nav_process">Process Map</a>
+                    <a href="#ulkeler" class="nav-link text-sm lg:text-base font-medium text-gray-700 hover:text-blue-600" data-key="nav_guide">Country Guide</a>
+                    <a href="#checklist" class="nav-link text-sm lg:text-base font-medium text-gray-700 hover:text-blue-600" data-key="nav_checklist">Checklist</a>
+                    <a href="#veriler" class="nav-link text-sm lg:text-base font-medium text-gray-700 hover:text-blue-600" data-key="nav_data">Tools</a>
+                    <a href="#sss" class="nav-link text-sm lg:text-base font-medium text-gray-700 hover:text-blue-600" data-key="nav_faq">FAQ</a>
+                    <a href="#links" class="nav-link text-sm lg:text-base font-medium text-gray-700 hover:text-blue-600" data-key="nav_links">Resources</a>
+                </div>
+                
+                <!-- Language Selector -->
+                <div id="lang-selector" class="flex space-x-1 md:space-x-2">
+                    <button class="lang-switcher text-xs md:text-sm font-medium text-gray-600 px-2 py-1" data-lang="en">EN</button>
+                    <button class="lang-switcher text-xs md:text-sm font-medium text-gray-600 px-2 py-1" data-lang="ar">AR</button>
+                    <button class="lang-switcher text-xs md:text-sm font-medium text-gray-600 px-2 py-1" data-lang="hi">HI</button>
+                </div>
+            </div>
+            
+            <!-- Mobile Navigation Menu -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 pb-2 border-t border-gray-200">
+                <div class="flex flex-col space-y-2 pt-3">
+                    <a href="#home" class="nav-link text-base font-medium text-gray-700 hover:text-blue-600 py-2" data-key="nav_home" onclick="closeMobileMenu()">Home</a>
+                    <a href="#surec" class="nav-link text-base font-medium text-gray-700 hover:text-blue-600 py-2" data-key="nav_process" onclick="closeMobileMenu()">Process Map</a>
+                    <a href="#ulkeler" class="nav-link text-base font-medium text-gray-700 hover:text-blue-600 py-2" data-key="nav_guide" onclick="closeMobileMenu()">Country Guide</a>
+                    <a href="#checklist" class="nav-link text-base font-medium text-gray-700 hover:text-blue-600 py-2" data-key="nav_checklist" onclick="closeMobileMenu()">Checklist</a>
+                    <a href="#veriler" class="nav-link text-base font-medium text-gray-700 hover:text-blue-600 py-2" data-key="nav_data" onclick="closeMobileMenu()">Tools</a>
+                    <a href="#sss" class="nav-link text-base font-medium text-gray-700 hover:text-blue-600 py-2" data-key="nav_faq" onclick="closeMobileMenu()">FAQ</a>
+                    <a href="#links" class="nav-link text-base font-medium text-gray-700 hover:text-blue-600 py-2" data-key="nav_links" onclick="closeMobileMenu()">Resources</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Ana İçerik -->
+    <main>
+
+        <!-- Hero Bölümü -->
+        <section id="home" class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4 py-20 bg-white">
+            <h1 class="text-4xl md:text-6xl font-bold text-teal-700 mb-4" data-key="hero_title">GCC Pet License Assistant</h1>
+            <p class="text-lg md:text-xl text-gray-600 max-w-2xl" data-key="hero_subtitle">
+                Simplify your pet relocation or license renewal process for Gulf (GCC) countries. Step-by-step guides, country-specific info, and data analysis are here.
+            </p>
+            <div class="mt-8">
+                <a href="#surec" class="px-6 py-3 bg-teal-600 text-white font-semibold rounded-lg shadow-md hover:bg-teal-700 transition-colors" data-key="hero_button">
+                    Start Process
+                </a>
+            </div>
+        </section>
+
+        <!-- Süreç Haritası Bölümü -->
+        <section id="surec" class="py-16 md:py-24">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-4" data-key="process_title">Process Map</h2>
+                <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto" data-key="process_subtitle">
+                    The process of bringing your pet to GCC countries can seem complex. We've broken it down into 6 main steps. Click the titles for details.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <div class="process-card bg-white p-6 rounded-lg shadow-lg">
+                        <div class="process-card-baslik flex justify-between items-center cursor-pointer" role="button" tabindex="0" aria-expanded="false" aria-controls="step1-content" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+                            <h3 class="text-xl font-bold text-teal-700" data-key="step1_title">Step 1: Planning (6+ Months Out)</h3>
+                            <span class="text-teal-700 font-bold text-2xl toggle-icon" aria-hidden="true">+</span>
+                        </div>
+                        <div id="step1-content" class="process-card-content hidden mt-4 text-gray-600 space-y-2" data-key="step1_desc">
+                            <p><strong>Timing:</strong> Start the process at least 6 months in advance.</p>
+                            <p><strong>Relocator:</strong> Research pet-friendly airlines and cargo services (e.g., Emirates SkyCargo, Qatar Airways Cargo).</p>
+                            <p><strong>Rule Check:</strong> Check the most current import rules for your destination country (UAE, Saudi Arabia, Qatar, etc.).</p>
+                        </div>
+                    </div>
+
+                    <div class="process-card bg-white p-6 rounded-lg shadow-lg">
+                        <div class="process-card-baslik flex justify-between items-center cursor-pointer" role="button" tabindex="0" aria-expanded="false" aria-controls="step2-content" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+                            <h3 class="text-xl font-bold text-teal-700" data-key="step2_title">Step 2: Veterinary Prep</h3>
+                            <span class="text-teal-700 font-bold text-2xl toggle-icon" aria-hidden="true">+</span>
+                        </div>
+                        <div id="step2-content" class="process-card-content hidden mt-4 text-gray-600 space-y-2" data-key="step2_desc">
+                            <p><strong>Microchip:</strong> A 15-digit, ISO 11784/11785 compliant microchip is mandatory. All procedures must be done *after* this chip is implanted.</p>
+                            <p><strong>Rabies Vaccine:</strong> A valid rabies vaccine is required. Usually done within the last 1 year and at least 21 days must have passed.</p>
+                            <p><strong>Other Vaccines:</strong> Full DHPPL (for dogs) or FVRCP (for cats) vaccinations are needed.</p>
+                        </div>
+                    </div>
+
+                    <div class="process-card bg-white p-6 rounded-lg shadow-lg">
+                        <div class="process-card-baslik flex justify-between items-center cursor-pointer" role="button" tabindex="0" aria-expanded="false" aria-controls="step3-content" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+                            <h3 class="text-xl font-bold text-teal-700" data-key="step3_title">Step 3: Rabies Titer Test</h3>
+                            <span class="text-teal-700 font-bold text-2xl toggle-icon" aria-hidden="true">+</span>
+                        </div>
+                        <div id="step3-content" class="process-card-content hidden mt-4 text-gray-600 space-y-2" data-key="step3_desc">
+                            <p><strong>Requirement:</strong> Mandatory for pets coming from "high-risk" countries (many countries, including Turkey, are on this list).</p>
+                            <p><strong>Timing:</strong> A blood sample must be taken at least 30 days *after* the rabies vaccination.</p>
+                            <p><strong>Validity:</strong> The test must be done at least 3 months (90 days) before arrival. Getting results (≥0.5 IU/ml) can take weeks.</p>
+                        </div>
+                    </div>
+
+                    <div class="process-card bg-white p-6 rounded-lg shadow-lg">
+                        <div class="process-card-baslik flex justify-between items-center cursor-pointer" role="button" tabindex="0" aria-expanded="false" aria-controls="step4-content" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+                            <h3 class="text-xl font-bold text-teal-700" data-key="step4_title">Step 4: Permits & Documents</h3>
+                            <span class="text-teal-700 font-bold text-2xl toggle-icon" aria-hidden="true">+</span>
+                        </div>
+                        <div id="step4-content" class="process-card-content hidden mt-4 text-gray-600 space-y-2" data-key="step4_desc">
+                            <p><strong>Import Permit:</strong> Must be obtained from the destination country's relevant ministry (e.g., MOCCAE for UAE, MEWA for Saudi Arabia). This permit is often valid for 30 days.</p>
+                            <p><strong>Health Certificate:</strong> An official, government-endorsed health certificate is needed just before the flight (usually within the last 10 days).</p>
+                        </div>
+                    </div>
+
+                    <div class="process-card bg-white p-6 rounded-lg shadow-lg">
+                        <div class="process-card-baslik flex justify-between items-center cursor-pointer" role="button" tabindex="0" aria-expanded="false" aria-controls="step5-content" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+                            <h3 class="text-xl font-bold text-teal-700" data-key="step5_title">Step 5: Shipping & Flight</h3>
+                            <span class="text-teal-700 font-bold text-2xl toggle-icon" aria-hidden="true">+</span>
+                        </div>
+                        <div id="step5-content" class="process-card-content hidden mt-4 text-gray-600 space-y-2" data-key="step5_desc">
+                            <p><strong>Cargo:</strong> Most GCC countries require pets to arrive as manifested cargo. They may not be accepted in-cabin or as excess baggage.</p>
+                            <p><strong>Travel Crate:</strong> An IATA-approved, properly sized, and secure travel crate is mandatory.</p>
+                            <p><strong>Booking:</strong> Book the flight immediately after your import permit is approved.</p>
+                        </div>
+                    </div>
+
+                    <div class="process-card bg-white p-6 rounded-lg shadow-lg">
+                        <div class="process-card-baslik flex justify-between items-center cursor-pointer" role="button" tabindex="0" aria-expanded="false" aria-controls="step6-content" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+                            <h3 class="text-xl font-bold text-teal-700" data-key="step6_title">Step 6: Arrival & Local Reg.</h3>
+                            <span class="text-teal-700 font-bold text-2xl toggle-icon" aria-hidden="true">+</span>
+                        </div>
+                        <div id="step6-content" class="process-card-content hidden mt-4 text-gray-600 space-y-2" data-key="step6_desc">
+                            <p><strong>Customs:</strong> Upon arrival, your pet will undergo a veterinary check and documents will be inspected. Customs fees/taxes may apply.</p>
+                            <p><strong>Local License:</strong> After entering the country (usually within 1-2 weeks), you must register your pet with the local municipality (e.g., Dubai Municipality, Abu Dhabi Municipality) and get an annual license (tag).</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Ülke Rehberi Bölümü -->
+        <section id="ulkeler" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-4" data-key="guide_title">Interactive Country Guide</h2>
+                <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto" data-key="guide_subtitle">
+                    Each GCC country has its own specific rules. Select a country to view basic requirements, import processes, and information on banned breeds.
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    
+                    <div class="md:col-span-1">
+                        <label for="ulke-secim" class="block text-lg font-semibold mb-2" data-key="guide_select_label">Select Country:</label>
+                        <select id="ulke-secim" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500" aria-label="Select country">
+                            <option value="bae" data-key="country_bae">United Arab Emirates (UAE)</option>
+                            <option value="suudi" data-key="country_suudi">Saudi Arabia</option>
+                            <option value="katar" data-key="country_katar">Qatar</option>
+                            <option value="kuveyt" data-key="country_kuveyt">Kuwait</option>
+                            <option value="bahreyn" data-key="country_bahreyn">Bahrain</option>
+                            <option value="umman" data-key="country_umman">Oman</option>
+                        </select>
+                        <p class="text-sm text-gray-500 mt-4" data-key="guide_disclaimer">
+                            This information is for general guidance only. Rules can change frequently, so always check the official ministry (MOCCAE, MEWA, etc.) websites.
+                        </p>
+                    </div>
+
+                    <div class="md:col-span-2 bg-amber-50 p-6 rounded-lg shadow-inner">
+                        <div id="ulke-detay-konteyner">
+                            <!-- JS will populate this -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Document Checklist Bölümü -->
+        <section id="checklist" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4 max-w-4xl">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-4" data-key="checklist_title">Document Checklist</h2>
+                <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto" data-key="checklist_subtitle">
+                    Use this checklist to track your pet relocation documents. Print or save this page for reference.
+                </p>
+                <div class="bg-amber-50 p-6 rounded-lg shadow-lg">
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <input type="checkbox" id="check1" class="mt-1 mr-3 w-5 h-5 text-teal-600 rounded focus:ring-teal-500">
+                            <label for="check1" class="text-gray-700" data-key="check1">ISO 11784/11785 compliant 15-digit microchip implanted and verified</label>
+                        </div>
+                        <div class="flex items-start">
+                            <input type="checkbox" id="check2" class="mt-1 mr-3 w-5 h-5 text-teal-600 rounded focus:ring-teal-500">
+                            <label for="check2" class="text-gray-700" data-key="check2">Valid rabies vaccination certificate (within last 1 year, at least 21 days old)</label>
+                        </div>
+                        <div class="flex items-start">
+                            <input type="checkbox" id="check3" class="mt-1 mr-3 w-5 h-5 text-teal-600 rounded focus:ring-teal-500">
+                            <label for="check3" class="text-gray-700" data-key="check3">Complete DHPPL (dogs) or FVRCP (cats) vaccination records</label>
+                        </div>
+                        <div class="flex items-start">
+                            <input type="checkbox" id="check4" class="mt-1 mr-3 w-5 h-5 text-teal-600 rounded focus:ring-teal-500">
+                            <label for="check4" class="text-gray-700" data-key="check4">Rabies Titer Test (FAVN/OIE) result ≥0.5 IU/ml (if required, from high-risk countries)</label>
+                        </div>
+                        <div class="flex items-start">
+                            <input type="checkbox" id="check5" class="mt-1 mr-3 w-5 h-5 text-teal-600 rounded focus:ring-teal-500">
+                            <label for="check5" class="text-gray-700" data-key="check5">Import permit from destination country ministry (valid for 30 days)</label>
+                        </div>
+                        <div class="flex items-start">
+                            <input type="checkbox" id="check6" class="mt-1 mr-3 w-5 h-5 text-teal-600 rounded focus:ring-teal-500">
+                            <label for="check6" class="text-gray-700" data-key="check6">Official health certificate (issued within 10 days before travel)</label>
+                        </div>
+                        <div class="flex items-start">
+                            <input type="checkbox" id="check7" class="mt-1 mr-3 w-5 h-5 text-teal-600 rounded focus:ring-teal-500">
+                            <label for="check7" class="text-gray-700" data-key="check7">Internal/external parasite treatment certificate (within 14 days)</label>
+                        </div>
+                        <div class="flex items-start">
+                            <input type="checkbox" id="check8" class="mt-1 mr-3 w-5 h-5 text-teal-600 rounded focus:ring-teal-500">
+                            <label for="check8" class="text-gray-700" data-key="check8">IATA-approved travel crate (properly sized, secure, labeled)</label>
+                        </div>
+                        <div class="flex items-start">
+                            <input type="checkbox" id="check9" class="mt-1 mr-3 w-5 h-5 text-teal-600 rounded focus:ring-teal-500">
+                            <label for="check9" class="text-gray-700" data-key="check9">Flight booking confirmation (cargo manifest)</label>
+                        </div>
+                        <div class="flex items-start">
+                            <input type="checkbox" id="check10" class="mt-1 mr-3 w-5 h-5 text-teal-600 rounded focus:ring-teal-500">
+                            <label for="check10" class="text-gray-700" data-key="check10">All documents translated and attested (if required by destination country)</label>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-center gap-4">
+                        <button onclick="window.print()" class="px-6 py-2 bg-teal-600 text-white font-semibold rounded-lg shadow-md hover:bg-teal-700 transition-colors" data-key="checklist_print">Print Checklist</button>
+                        <button onclick="resetChecklist()" class="px-6 py-2 bg-gray-300 text-gray-700 font-semibold rounded-lg shadow-md hover:bg-gray-400 transition-colors" data-key="checklist_reset">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Veri & Maliyet Bölümü -->
+        <section id="veriler" class="py-16 md:py-24">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-4" data-key="data_title">Tools & Data Analysis</h2>
+                <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto" data-key="data_subtitle">
+                    Use our calculators and charts to plan your pet relocation timeline and budget.
+                </p>
+
+                <!-- Timeline Calculator -->
+                <div class="bg-white p-6 rounded-lg shadow-lg mb-8 max-w-3xl mx-auto">
+                    <h3 class="text-2xl font-bold text-center mb-6 text-teal-700" data-key="timeline_title">Timeline Calculator</h3>
+                    <p class="text-center text-gray-600 mb-6" data-key="timeline_subtitle">Enter your planned start date to calculate important milestone dates.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="start-date" class="block text-sm font-semibold mb-2" data-key="timeline_start_label">Start Date:</label>
+                            <input type="date" id="start-date" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                        </div>
+                        <div>
+                            <label for="pet-type" class="block text-sm font-semibold mb-2" data-key="timeline_pet_label">Pet Type:</label>
+                            <select id="pet-type" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                <option value="high-risk" data-key="timeline_high_risk">From High-Risk Country (Titer Test Required)</option>
+                                <option value="low-risk" data-key="timeline_low_risk">From Low-Risk Country (No Titer Test)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="calculateTimeline()" class="w-full mt-6 px-6 py-3 bg-teal-600 text-white font-semibold rounded-lg shadow-md hover:bg-teal-700 transition-colors" data-key="timeline_calculate">Calculate Timeline</button>
+                    <div id="timeline-results" class="mt-6 space-y-3 hidden">
+                        <div class="bg-amber-50 p-4 rounded-lg">
+                            <p class="font-semibold text-gray-800" data-key="timeline_microchip">Microchip Implantation:</p>
+                            <p id="microchip-date" class="text-teal-700 font-bold"></p>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-lg">
+                            <p class="font-semibold text-gray-800" data-key="timeline_rabies">Rabies Vaccination:</p>
+                            <p id="rabies-date" class="text-teal-700 font-bold"></p>
+                        </div>
+                        <div id="titer-section" class="bg-amber-50 p-4 rounded-lg">
+                            <p class="font-semibold text-gray-800" data-key="timeline_titer">Titer Test Blood Sample:</p>
+                            <p id="titer-date" class="text-teal-700 font-bold"></p>
+                        </div>
+                        <div id="titer-result-section" class="bg-amber-50 p-4 rounded-lg">
+                            <p class="font-semibold text-gray-800" data-key="timeline_titer_result">Titer Test Results Expected:</p>
+                            <p id="titer-result-date" class="text-teal-700 font-bold"></p>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-lg">
+                            <p class="font-semibold text-gray-800" data-key="timeline_permit">Apply for Import Permit:</p>
+                            <p id="permit-date" class="text-teal-700 font-bold"></p>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-lg">
+                            <p class="font-semibold text-gray-800" data-key="timeline_health">Health Certificate (Last 10 Days):</p>
+                            <p id="health-date" class="text-teal-700 font-bold"></p>
+                        </div>
+                        <div class="bg-teal-100 p-4 rounded-lg border-2 border-teal-600">
+                            <p class="font-semibold text-gray-800" data-key="timeline_travel">Earliest Travel Date:</p>
+                            <p id="travel-date" class="text-teal-700 font-bold text-xl"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cost Calculator -->
+                <div class="bg-white p-6 rounded-lg shadow-lg mb-8 max-w-3xl mx-auto">
+                    <h3 class="text-2xl font-bold text-center mb-6 text-teal-700" data-key="cost_title">Cost Calculator</h3>
+                    <p class="text-center text-gray-600 mb-6" data-key="cost_subtitle">Estimate your pet relocation costs based on destination and pet type.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="cost-country" class="block text-sm font-semibold mb-2" data-key="cost_country_label">Destination Country:</label>
+                            <select id="cost-country" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                <option value="bae">UAE</option>
+                                <option value="suudi">Saudi Arabia</option>
+                                <option value="katar">Qatar</option>
+                                <option value="kuveyt">Kuwait</option>
+                                <option value="bahreyn">Bahrain</option>
+                                <option value="umman">Oman</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="cost-pet-type" class="block text-sm font-semibold mb-2" data-key="cost_pet_label">Pet Type:</label>
+                            <select id="cost-pet-type" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                <option value="dog">Dog</option>
+                                <option value="cat">Cat</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="cost-titer" class="block text-sm font-semibold mb-2" data-key="cost_titer_label">Titer Test Required:</label>
+                            <select id="cost-titer" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                <option value="yes" data-key="cost_yes">Yes</option>
+                                <option value="no" data-key="cost_no">No</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="cost-relocator" class="block text-sm font-semibold mb-2" data-key="cost_relocator_label">Use Pet Relocator Service:</label>
+                            <select id="cost-relocator" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                <option value="yes" data-key="cost_yes">Yes</option>
+                                <option value="no" data-key="cost_no">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="calculateCost()" class="w-full mt-6 px-6 py-3 bg-teal-600 text-white font-semibold rounded-lg shadow-md hover:bg-teal-700 transition-colors" data-key="cost_calculate">Calculate Estimated Cost</button>
+                    <div id="cost-results" class="mt-6 space-y-3 hidden">
+                        <div class="bg-amber-50 p-4 rounded-lg">
+                            <p class="font-semibold text-gray-800" data-key="cost_vet">Veterinary Costs (Vaccines, Tests, Microchip):</p>
+                            <p id="cost-vet" class="text-teal-700 font-bold text-lg"></p>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-lg">
+                            <p class="font-semibold text-gray-800" data-key="cost_permit">Permit & Document Fees:</p>
+                            <p id="cost-permit" class="text-teal-700 font-bold text-lg"></p>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-lg">
+                            <p class="font-semibold text-gray-800" data-key="cost_cargo">Cargo & Relocator Fees:</p>
+                            <p id="cost-cargo" class="text-teal-700 font-bold text-lg"></p>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-lg">
+                            <p class="font-semibold text-gray-800" data-key="cost_other">Other (Crate, Attestation, etc.):</p>
+                            <p id="cost-other" class="text-teal-700 font-bold text-lg"></p>
+                        </div>
+                        <div class="bg-teal-100 p-4 rounded-lg border-2 border-teal-600">
+                            <p class="font-semibold text-gray-800" data-key="cost_total">Total Estimated Cost (Excluding Flight):</p>
+                            <p id="cost-total" class="text-teal-700 font-bold text-2xl"></p>
+                            <p class="text-sm text-gray-600 mt-2" data-key="cost_note">Note: Flight costs vary significantly by airline, route, and pet size. Contact airlines directly for accurate quotes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Temperature Restrictions -->
+                <div class="bg-white p-6 rounded-lg shadow-lg mb-8 max-w-3xl mx-auto">
+                    <h3 class="text-2xl font-bold text-center mb-6 text-teal-700" data-key="temp_title">Temperature Restrictions</h3>
+                    <div class="space-y-4 text-gray-700">
+                        <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500">
+                            <p class="font-semibold text-red-800 mb-2" data-key="temp_restricted">Restricted Travel Periods:</p>
+                            <p data-key="temp_info">Most GCC countries restrict pet travel during summer months (typically May-September) when temperatures exceed safe limits. Airlines may refuse to transport pets when ground temperatures are above 29°C (85°F) or below 7°C (45°F).</p>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-lg">
+                            <p class="font-semibold text-gray-800 mb-2" data-key="temp_brachy">Special Warning for Brachycephalic Breeds:</p>
+                            <p data-key="temp_brachy_info">Short-nosed breeds (Bulldogs, Pugs, Persian cats, etc.) are at higher risk in hot weather. Some airlines have additional restrictions or may refuse these breeds entirely during summer months.</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <p class="font-semibold text-gray-800 mb-2" data-key="temp_check">Always Check:</p>
+                            <p data-key="temp_check_info">Contact your airline directly before booking. Temperature restrictions vary by airline and can change daily based on weather forecasts at origin, destination, and transit airports.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-bold text-center mb-4" data-key="chart1_title">Estimated Prep Time (Weeks)</h3>
+                        <p class="text-center text-sm text-gray-500 mb-4" data-key="chart1_subtitle">Total time required, including the Rabies Titer Test waiting period (3 months).</p>
+                        <div class="chart-container">
+                            <canvas id="sureChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-bold text-center mb-4" data-key="chart2_title">Est. Cost Breakdown (%)</h3>
+                        <p class="text-center text-sm text-gray-500 mb-4" data-key="chart2_subtitle">Estimated breakdown of prep costs, excluding flight fares.</p>
+                        <div class="chart-container">
+                            <canvas id="maliyetChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-lg lg:col-span-2">
+                        <h3 class="text-xl font-bold text-center mb-4" data-key="chart3_title">Most Common Errors (%)</h3>
+                        <p class="text-center text-sm text-gray-500 mb-4" data-key="chart3_subtitle">Common mistakes that lead to application rejection or delays.</p>
+                        <div class="chart-container max-w-md">
+                            <canvas id="hataChart"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SSS Bölümü -->
+        <section id="sss" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4 max-w-4xl">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12" data-key="faq_title">Frequently Asked Questions (FAQ)</h2>
+                
+                <div class="space-y-4">
+                    
+                    <div class="faq-item bg-amber-50 rounded-lg shadow-sm overflow-hidden">
+                        <div class="faq-soru p-5 flex justify-between items-center cursor-pointer" role="button" tabindex="0" aria-expanded="false" aria-controls="faq1-content" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+                            <h4 class="font-semibold text-lg" data-key="faq1_q">What is a microchip and why is it mandatory?</h4>
+                            <span class="text-teal-700 font-bold text-2xl toggle-icon" aria-hidden="true">+</span>
+                        </div>
+                        <div id="faq1-content" class="faq-cevap hidden p-5 border-t border-amber-100 text-gray-600" data-key="faq1_a">
+                            A microchip is a permanent electronic ID tag (the size of a grain of rice) for your pet. It's mandatory in GCC countries for tracking lost/stolen pets, proof of ownership, and public health (rabies tracking). All vaccinations and tests must be done *after* this chip is implanted.
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item bg-amber-50 rounded-lg shadow-sm overflow-hidden">
+                        <div class="faq-soru p-5 flex justify-between items-center cursor-pointer" role="button" tabindex="0" aria-expanded="false" aria-controls="faq2-content" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+                            <h4 class="font-semibold text-lg" data-key="faq2_q">Is the Rabies Titer Test always required?</h4>
+                            <span class="text-teal-700 font-bold text-2xl toggle-icon" aria-hidden="true">+</span>
+                        </div>
+                        <div id="faq2-content" class="faq-cevap hidden p-5 border-t border-amber-100 text-gray-600" data-key="faq2_a">
+                            No, but YES for pets from "high-risk" countries (most of Europe, Turkey, USA, Canada, etc.). If you are coming from a "low-risk" (rabies-free) country (e.g., Australia, New Zealand, Japan, UK), it's
+                            usually not required. However, this list can change, check the MOCCAE list for the UAE.
+                        </div>
+                    </div>
+
+                    <div class="faq-item bg-amber-50 rounded-lg shadow-sm overflow-hidden">
+                        <div class="faq-soru p-5 flex justify-between items-center cursor-pointer" role="button" tabindex="0" aria-expanded="false" aria-controls="faq3-content" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+                            <h4 class="font-semibold text-lg" data-key="faq3_q">Can my pet travel in the cabin with me?</h4>
+                            <span class="text-teal-700 font-bold text-2xl toggle-icon" aria-hidden="true">+</span>
+                        </div>
+                        <div id="faq3-content" class="faq-cevap hidden p-5 border-t border-amber-100 text-gray-600" data-key="faq3_a">
+                            Usually, no. Most GCC countries (especially UAE, Qatar, Saudi Arabia) only allow pets to enter as "manifested cargo." This means the animal must be collected from a special cargo terminal via specific procedures. Exceptions may exist (e.g., guide dogs), but for standard pets, cargo is the rule.
+                        </div>
+                    </div>
+
+                    <div class="faq-item bg-amber-50 rounded-lg shadow-sm overflow-hidden">
+                        <div class="faq-soru p-5 flex justify-between items-center cursor-pointer" role="button" tabindex="0" aria-expanded="false" aria-controls="faq4-content" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+                            <h4 class="font-semibold text-lg" data-key="faq4_q">What is a restricted/banned breed?</h4>
+                            <span class="text-teal-700 font-bold text-2xl toggle-icon" aria-hidden="true">+</span>
+                        </div>
+                        <div id="faq4-content" class="faq-cevap hidden p-5 border-t border-amber-100 text-gray-600" data-key="faq4_a">
+                            All GCC countries prohibit the import and ownership of certain dog breeds (or their mixes) considered "dangerous." These lists vary by country but often include Pit Bull Terriers, Staffordshire Terriers, Tosa Inu, Dogo Argentino, Fila Brasileiro, and some Mastiff types. Do not start the process without checking the country-specific list.
+                        </div>
+                    </div>
+
+                    <div class="faq-item bg-amber-50 rounded-lg shadow-sm overflow-hidden">
+                        <div class="faq-soru p-5 flex justify-between items-center cursor-pointer" role="button" tabindex="0" aria-expanded="false" aria-controls="faq5-content" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+                            <h4 class="font-semibold text-lg" data-key="faq5_q">Are there age restrictions for importing pets?</h4>
+                            <span class="text-teal-700 font-bold text-2xl toggle-icon" aria-hidden="true">+</span>
+                        </div>
+                        <div id="faq5-content" class="faq-cevap hidden p-5 border-t border-amber-100 text-gray-600" data-key="faq5_a">
+                            Yes. Most GCC countries require pets to be at least 4 months old (some require 6 months) to allow for complete vaccination schedules. There is usually no maximum age limit, but very old pets may require additional health documentation. Puppies and kittens under the minimum age cannot be imported.
+                        </div>
+                    </div>
+
+                    <div class="faq-item bg-amber-50 rounded-lg shadow-sm overflow-hidden">
+                        <div class="faq-soru p-5 flex justify-between items-center cursor-pointer" role="button" tabindex="0" aria-expanded="false" aria-controls="faq6-content" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+                            <h4 class="font-semibold text-lg" data-key="faq6_q">Can I bring multiple pets?</h4>
+                            <span class="text-teal-700 font-bold text-2xl toggle-icon" aria-hidden="true">+</span>
+                        </div>
+                        <div id="faq6-content" class="faq-cevap hidden p-5 border-t border-amber-100 text-gray-600" data-key="faq6_a">
+                            Limits vary by country. Saudi Arabia typically allows up to 2 pets per person. UAE and other countries may have different limits. Each pet requires separate permits, documents, and fees. Check the specific country's regulations before planning to import multiple pets.
+                        </div>
+                    </div>
+
+                    <div class="faq-item bg-amber-50 rounded-lg shadow-sm overflow-hidden">
+                        <div class="faq-soru p-5 flex justify-between items-center cursor-pointer" role="button" tabindex="0" aria-expanded="false" aria-controls="faq7-content" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+                            <h4 class="font-semibold text-lg" data-key="faq7_q">Is quarantine required upon arrival?</h4>
+                            <span class="text-teal-700 font-bold text-2xl toggle-icon" aria-hidden="true">+</span>
+                        </div>
+                        <div id="faq7-content" class="faq-cevap hidden p-5 border-t border-amber-100 text-gray-600" data-key="faq7_a">
+                            Generally, no quarantine is required if all documents are in order and the pet arrives with proper permits. However, if documents are incomplete or there are health concerns, temporary quarantine may be enforced. Pets from certain countries or with incomplete vaccination records may face quarantine requirements.
+                        </div>
+                    </div>
+
+                    <div class="faq-item bg-amber-50 rounded-lg shadow-sm overflow-hidden">
+                        <div class="faq-soru p-5 flex justify-between items-center cursor-pointer" role="button" tabindex="0" aria-expanded="false" aria-controls="faq8-content" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+                            <h4 class="font-semibold text-lg" data-key="faq8_q">How do I renew my pet's license after arrival?</h4>
+                            <span class="text-teal-700 font-bold text-2xl toggle-icon" aria-hidden="true">+</span>
+                        </div>
+                        <div id="faq8-content" class="faq-cevap hidden p-5 border-t border-amber-100 text-gray-600" data-key="faq8_a">
+                            After entering the country, you must register your pet with the local municipality (e.g., Dubai Municipality, Abu Dhabi Municipality) within 1-2 weeks. You'll receive an annual license tag. Renewal is required yearly, usually before the license expires. Keep vaccination records up to date for renewal. Fees vary by emirate/city.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Useful Links & Emergency Contacts -->
+        <section id="links" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4 max-w-6xl">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12" data-key="links_title">Resources & Emergency Contacts</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Official Links -->
+                    <div class="bg-amber-50 p-6 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold text-teal-700 mb-4" data-key="links_official">Official Government Websites</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <p class="font-semibold text-gray-800 mb-1">UAE - MOCCAE</p>
+                                <a href="https://www.moccae.gov.ae" target="_blank" rel="noopener noreferrer" class="text-teal-600 hover:text-teal-800 underline">www.moccae.gov.ae</a>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800 mb-1">Saudi Arabia - MEWA</p>
+                                <a href="https://www.mewa.gov.sa" target="_blank" rel="noopener noreferrer" class="text-teal-600 hover:text-teal-800 underline">www.mewa.gov.sa</a>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800 mb-1">Qatar - MME</p>
+                                <a href="https://www.mme.gov.qa" target="_blank" rel="noopener noreferrer" class="text-teal-600 hover:text-teal-800 underline">www.mme.gov.qa</a>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800 mb-1">Kuwait - PAAF</p>
+                                <a href="https://www.paaf.gov.kw" target="_blank" rel="noopener noreferrer" class="text-teal-600 hover:text-teal-800 underline">www.paaf.gov.kw</a>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800 mb-1">Bahrain - Ministry of Agriculture</p>
+                                <a href="https://www.moa.gov.bh" target="_blank" rel="noopener noreferrer" class="text-teal-600 hover:text-teal-800 underline">www.moa.gov.bh</a>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800 mb-1">Oman - Ministry of Agriculture</p>
+                                <a href="https://www.maf.gov.om" target="_blank" rel="noopener noreferrer" class="text-teal-600 hover:text-teal-800 underline">www.maf.gov.om</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Airline Pet Policies -->
+                    <div class="bg-amber-50 p-6 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold text-teal-700 mb-4" data-key="links_airlines">Airline Pet Policies</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <p class="font-semibold text-gray-800 mb-1">Emirates SkyCargo</p>
+                                <a href="https://www.emirates.com/cargo" target="_blank" rel="noopener noreferrer" class="text-teal-600 hover:text-teal-800 underline">www.emirates.com/cargo</a>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800 mb-1">Qatar Airways Cargo</p>
+                                <a href="https://www.qrcargo.com" target="_blank" rel="noopener noreferrer" class="text-teal-600 hover:text-teal-800 underline">www.qrcargo.com</a>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800 mb-1">Etihad Cargo</p>
+                                <a href="https://www.etihadcargo.com" target="_blank" rel="noopener noreferrer" class="text-teal-600 hover:text-teal-800 underline">www.etihadcargo.com</a>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800 mb-1">Saudia Cargo</p>
+                                <a href="https://www.saudiacargo.com" target="_blank" rel="noopener noreferrer" class="text-teal-600 hover:text-teal-800 underline">www.saudiacargo.com</a>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800 mb-1">Kuwait Airways Cargo</p>
+                                <a href="https://www.kuwaitairways.com/cargo" target="_blank" rel="noopener noreferrer" class="text-teal-600 hover:text-teal-800 underline">www.kuwaitairways.com/cargo</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Emergency Contacts -->
+                    <div class="bg-red-50 p-6 rounded-lg shadow-lg border-l-4 border-red-500">
+                        <h3 class="text-2xl font-bold text-red-700 mb-4" data-key="links_emergency">Emergency Contacts</h3>
+                        <div class="space-y-3 text-gray-700">
+                            <div>
+                                <p class="font-semibold mb-1" data-key="emergency_note">In case of emergency during pet travel:</p>
+                                <p class="text-sm" data-key="emergency_info">Contact your airline's cargo department immediately. Have your pet's microchip number, flight details, and all documents ready. For veterinary emergencies at destination, contact local emergency veterinary clinics or the airport veterinary services.</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold mb-1" data-key="emergency_airport">Airport Veterinary Services:</p>
+                                <p class="text-sm" data-key="emergency_airport_info">Most GCC airports have 24/7 veterinary services. Contact information is usually available at the cargo terminal or through your airline.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Resources -->
+                    <div class="bg-blue-50 p-6 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold text-teal-700 mb-4" data-key="links_additional">Additional Resources</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <p class="font-semibold text-gray-800 mb-1">IATA Live Animals Regulations</p>
+                                <a href="https://www.iata.org/en/publications/store/live-animals-regulations" target="_blank" rel="noopener noreferrer" class="text-teal-600 hover:text-teal-800 underline">www.iata.org/live-animals</a>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800 mb-1">OIE (World Organisation for Animal Health)</p>
+                                <a href="https://www.woah.org" target="_blank" rel="noopener noreferrer" class="text-teal-600 hover:text-teal-800 underline">www.woah.org</a>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800 mb-1">USDA APHIS (for US-based pet owners)</p>
+                                <a href="https://www.aphis.usda.gov" target="_blank" rel="noopener noreferrer" class="text-teal-600 hover:text-teal-800 underline">www.aphis.usda.gov</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 py-8 text-center">
+        <div class="container mx-auto px-4">
+            <p class="text-sm" data-key="footer_copy">
+                &copy; 2025 GCC Pet License Assistant. All rights reserved.
+            </p>
+            <p class="text-xs mt-2 text-gray-400" data-key="footer_disclaimer">
+                Disclaimer: This website is for informational purposes only and does not constitute legal advice. Please consult the official government agencies of the respective countries for the most current and accurate information.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // --- TRANSLATION DATA ---
+        
+        const translations = {
+            'en': {
+                'title': 'GCC Pet License Assistant',
+                'nav_home': 'Home',
+                'nav_process': 'Process Map',
+                'nav_guide': 'Country Guide',
+                'nav_checklist': 'Checklist',
+                'nav_data': 'Tools',
+                'nav_faq': 'FAQ',
+                'nav_links': 'Resources',
+                'hero_title': 'GCC Pet License Assistant',
+                'hero_subtitle': 'Simplify your pet relocation or license renewal process for Gulf (GCC) countries. Step-by-step guides, country-specific info, and data analysis are here.',
+                'hero_button': 'Start Process',
+                'process_title': 'Process Map',
+                'process_subtitle': 'The process of bringing your pet to GCC countries can seem complex. We\'ve broken it down into 6 main steps. Click the titles for details.',
+                'step1_title': 'Step 1: Planning (6+ Months Out)',
+                'step1_desc': '<p><strong>Timing:</strong> Start the process at least 6 months in advance.</p><p><strong>Relocator:</strong> Research pet-friendly airlines and cargo services (e.g., Emirates SkyCargo, Qatar Airways Cargo).</p><p><strong>Rule Check:</strong> Check the most current import rules for your destination country (UAE, Saudi Arabia, Qatar, etc.).</p>',
+                'step2_title': 'Step 2: Veterinary Prep',
+                'step2_desc': '<p><strong>Microchip:</strong> A 15-digit, ISO 11784/11785 compliant microchip is mandatory. All procedures must be done *after* this chip is implanted.</p><p><strong>Rabies Vaccine:</strong> A valid rabies vaccine is required. Usually done within the last 1 year and at least 21 days must have passed.</p><p><strong>Other Vaccines:</strong> Full DHPPL (for dogs) or FVRCP (for cats) vaccinations are needed.</p>',
+                'step3_title': 'Step 3: Rabies Titer Test',
+                'step3_desc': '<p><strong>Requirement:</strong> Mandatory for pets coming from "high-risk" countries (many countries, including Turkey, are on this list).</p><p><strong>Timing:</strong> A blood sample must be taken at least 30 days *after* the rabies vaccination.</p><p><strong>Validity:</strong> The test must be done at least 3 months (90 days) before arrival. Getting results (≥0.5 IU/ml) can take weeks.</p>',
+                'step4_title': 'Step 4: Permits & Documents',
+                'step4_desc': '<p><strong>Import Permit:</strong> Must be obtained from the destination country\'s relevant ministry (e.g., MOCCAE for UAE, MEWA for Saudi Arabia). This permit is often valid for 30 days.</p><p><strong>Health Certificate:</strong> An official, government-endorsed health certificate is needed just before the flight (usually within the last 10 days).</p>',
+                'step5_title': 'Step 5: Shipping & Flight',
+                'step5_desc': '<p><strong>Cargo:</strong> Most GCC countries require pets to arrive as manifested cargo. They may not be accepted in-cabin or as excess baggage.</p><p><strong>Travel Crate:</strong> An IATA-approved, properly sized, and secure travel crate is mandatory.</p><p><strong>Booking:</strong> Book the flight immediately after your import permit is approved.</p>',
+                'step6_title': 'Step 6: Arrival & Local Reg.',
+                'step6_desc': '<p><strong>Customs:</strong> Upon arrival, your pet will undergo a veterinary check and documents will be inspected. Customs fees/taxes may apply.</p><p><strong>Local License:</strong> After entering the country (usually within 1-2 weeks), you must register your pet with the local municipality (e.g., Dubai Municipality, Abu Dhabi Municipality) and get an annual license (tag).</p>',
+                'guide_title': 'Interactive Country Guide',
+                'guide_subtitle': 'Each GCC country has its own specific rules. Select a country to view basic requirements, import processes, and information on banned breeds.',
+                'guide_select_label': 'Select Country:',
+                'guide_disclaimer': 'This information is for general guidance only. Rules can change frequently, so always check the official ministry (MOCCAE, MEWA, etc.) websites.',
+                'checklist_title': 'Document Checklist',
+                'checklist_subtitle': 'Use this checklist to track your pet relocation documents. Print or save this page for reference.',
+                'check1': 'ISO 11784/11785 compliant 15-digit microchip implanted and verified',
+                'check2': 'Valid rabies vaccination certificate (within last 1 year, at least 21 days old)',
+                'check3': 'Complete DHPPL (dogs) or FVRCP (cats) vaccination records',
+                'check4': 'Rabies Titer Test (FAVN/OIE) result ≥0.5 IU/ml (if required, from high-risk countries)',
+                'check5': 'Import permit from destination country ministry (valid for 30 days)',
+                'check6': 'Official health certificate (issued within 10 days before travel)',
+                'check7': 'Internal/external parasite treatment certificate (within 14 days)',
+                'check8': 'IATA-approved travel crate (properly sized, secure, labeled)',
+                'check9': 'Flight booking confirmation (cargo manifest)',
+                'check10': 'All documents translated and attested (if required by destination country)',
+                'checklist_print': 'Print Checklist',
+                'checklist_reset': 'Reset',
+                'data_title': 'Tools & Data Analysis',
+                'data_subtitle': 'Use our calculators and charts to plan your pet relocation timeline and budget.',
+                'timeline_title': 'Timeline Calculator',
+                'timeline_subtitle': 'Enter your planned start date to calculate important milestone dates.',
+                'timeline_start_label': 'Start Date:',
+                'timeline_pet_label': 'Pet Type:',
+                'timeline_high_risk': 'From High-Risk Country (Titer Test Required)',
+                'timeline_low_risk': 'From Low-Risk Country (No Titer Test)',
+                'timeline_calculate': 'Calculate Timeline',
+                'timeline_microchip': 'Microchip Implantation:',
+                'timeline_rabies': 'Rabies Vaccination:',
+                'timeline_titer': 'Titer Test Blood Sample:',
+                'timeline_titer_result': 'Titer Test Results Expected:',
+                'timeline_permit': 'Apply for Import Permit:',
+                'timeline_health': 'Health Certificate (Last 10 Days):',
+                'timeline_travel': 'Earliest Travel Date:',
+                'cost_title': 'Cost Calculator',
+                'cost_subtitle': 'Estimate your pet relocation costs based on destination and pet type.',
+                'cost_country_label': 'Destination Country:',
+                'cost_pet_label': 'Pet Type:',
+                'cost_titer_label': 'Titer Test Required:',
+                'cost_relocator_label': 'Use Pet Relocator Service:',
+                'cost_yes': 'Yes',
+                'cost_no': 'No',
+                'cost_calculate': 'Calculate Estimated Cost',
+                'cost_vet': 'Veterinary Costs (Vaccines, Tests, Microchip):',
+                'cost_permit': 'Permit & Document Fees:',
+                'cost_cargo': 'Cargo & Relocator Fees:',
+                'cost_other': 'Other (Crate, Attestation, etc.):',
+                'cost_total': 'Total Estimated Cost (Excluding Flight):',
+                'cost_note': 'Note: Flight costs vary significantly by airline, route, and pet size. Contact airlines directly for accurate quotes.',
+                'temp_title': 'Temperature Restrictions',
+                'temp_restricted': 'Restricted Travel Periods:',
+                'temp_info': 'Most GCC countries restrict pet travel during summer months (typically May-September) when temperatures exceed safe limits. Airlines may refuse to transport pets when ground temperatures are above 29°C (85°F) or below 7°C (45°F).',
+                'temp_brachy': 'Special Warning for Brachycephalic Breeds:',
+                'temp_brachy_info': 'Short-nosed breeds (Bulldogs, Pugs, Persian cats, etc.) are at higher risk in hot weather. Some airlines have additional restrictions or may refuse these breeds entirely during summer months.',
+                'temp_check': 'Always Check:',
+                'temp_check_info': 'Contact your airline directly before booking. Temperature restrictions vary by airline and can change daily based on weather forecasts at origin, destination, and transit airports.',
+                'chart1_title': 'Estimated Prep Time (Weeks)',
+                'chart1_subtitle': 'Total time required, including the Rabies Titer Test waiting period (3 months).',
+                'chart2_title': 'Est. Cost Breakdown (%)',
+                'chart2_subtitle': 'Estimated breakdown of prep costs, excluding flight fares.',
+                'chart3_title': 'Most Common Errors (%)',
+                'chart3_subtitle': 'Common mistakes that lead to application rejection or delays.',
+                'faq_title': 'Frequently Asked Questions (FAQ)',
+                'faq1_q': 'What is a microchip and why is it mandatory?',
+                'faq1_a': 'A microchip is a permanent electronic ID tag (the size of a grain of rice) for your pet. It\'s mandatory in GCC countries for tracking lost/stolen pets, proof of ownership, and public health (rabies tracking). All vaccinations and tests must be done *after* this chip is implanted.',
+                'faq2_q': 'Is the Rabies Titer Test always required?',
+                'faq2_a': 'No, but YES for pets from "high-risk" countries (most of Europe, Turkey, USA, Canada, etc.). If you are coming from a "low-risk" (rabies-free) country (e.g., Australia, New Zealand, Japan, UK), it\'s usually not required. However, this list can change, check the MOCCAE list for the UAE.',
+                'faq3_q': 'Can my pet travel in the cabin with me?',
+                'faq3_a': 'Usually, no. Most GCC countries (especially UAE, Qatar, Saudi Arabia) only allow pets to enter as "manifested cargo." This means the animal must be collected from a special cargo terminal via specific procedures. Exceptions may exist (e.g., guide dogs), but for standard pets, cargo is the rule.',
+                'faq4_q': 'What is a restricted/banned breed?',
+                'faq4_a': 'All GCC countries prohibit the import and ownership of certain dog breeds (or their mixes) considered "dangerous." These lists vary by country but often include Pit Bull Terriers, Staffordshire Terriers, Tosa Inu, Dogo Argentino, Fila Brasileiro, and some Mastiff types. Do not start the process without checking the country-specific list.',
+                'faq5_q': 'Are there age restrictions for importing pets?',
+                'faq5_a': 'Yes. Most GCC countries require pets to be at least 4 months old (some require 6 months) to allow for complete vaccination schedules. There is usually no maximum age limit, but very old pets may require additional health documentation. Puppies and kittens under the minimum age cannot be imported.',
+                'faq6_q': 'Can I bring multiple pets?',
+                'faq6_a': 'Limits vary by country. Saudi Arabia typically allows up to 2 pets per person. UAE and other countries may have different limits. Each pet requires separate permits, documents, and fees. Check the specific country\'s regulations before planning to import multiple pets.',
+                'faq7_q': 'Is quarantine required upon arrival?',
+                'faq7_a': 'Generally, no quarantine is required if all documents are in order and the pet arrives with proper permits. However, if documents are incomplete or there are health concerns, temporary quarantine may be enforced. Pets from certain countries or with incomplete vaccination records may face quarantine requirements.',
+                'faq8_q': 'How do I renew my pet\'s license after arrival?',
+                'faq8_a': 'After entering the country, you must register your pet with the local municipality (e.g., Dubai Municipality, Abu Dhabi Municipality) within 1-2 weeks. You\'ll receive an annual license tag. Renewal is required yearly, usually before the license expires. Keep vaccination records up to date for renewal. Fees vary by emirate/city.',
+                'links_title': 'Resources & Emergency Contacts',
+                'links_official': 'Official Government Websites',
+                'links_airlines': 'Airline Pet Policies',
+                'links_emergency': 'Emergency Contacts',
+                'links_additional': 'Additional Resources',
+                'emergency_note': 'In case of emergency during pet travel:',
+                'emergency_info': 'Contact your airline\'s cargo department immediately. Have your pet\'s microchip number, flight details, and all documents ready. For veterinary emergencies at destination, contact local emergency veterinary clinics or the airport veterinary services.',
+                'emergency_airport': 'Airport Veterinary Services:',
+                'emergency_airport_info': 'Most GCC airports have 24/7 veterinary services. Contact information is usually available at the cargo terminal or through your airline.',
+                'popup_title': 'Support This Project',
+                'popup_message': 'If you found this resource helpful, please consider supporting the project. Your contribution helps maintain and improve this free service.',
+                'popup_email': 'PayPal:',
+                'popup_button': 'Donate via PayPal',
+                'popup_close': 'Maybe later',
+                'popup_note': 'Or send directly to:',
+                'footer_copy': '© 2025 GCC Pet License Assistant. All rights reserved.',
+                'footer_disclaimer': 'Disclaimer: This website is for informational purposes only and does not constitute legal advice. Please consult the official government agencies of the respective countries for the most current and accurate information.',
+                'chart1_label': 'Est. Prep Time (Weeks)',
+                'chart1_tooltip_suffix': 'weeks (Approx. {months} months)',
+                'chart2_labels': ['Vet (Vaccine, Test, Chip)', 'Permit & Doc Fees', 'Cargo & Relocator Fees', 'Other (Crate, etc.)'],
+                'chart3_labels': ['Titer Test Timing Error', 'Missing/Wrong Vaccine Record', 'Expired Import Permit', 'Microchip Mismatch/Error', 'Other Paperwork Errors'],
+                'guide_detail_h4_1': 'Basic Requirements & Local License',
+                'guide_detail_h4_2': 'Import Process & Documents',
+                'guide_detail_h4_3': 'Banned / Restricted Breeds',
+                'country_bae': 'United Arab Emirates (UAE)',
+                'country_suudi': 'Saudi Arabia',
+                'country_katar': 'Qatar',
+                'country_kuveyt': 'Kuwait',
+                'country_bahreyn': 'Bahrain',
+                'country_umman': 'Oman'
+            },
+            'ar': {
+                'title': 'مساعد ترخيص الحيوانات الأليفة لدول مجلس التعاون الخليجي',
+                'nav_home': 'الرئيسية',
+                'nav_process': 'خريطة العملية',
+                'nav_guide': 'دليل الدول',
+                'nav_checklist': 'قائمة التحقق',
+                'nav_data': 'الأدوات',
+                'nav_faq': 'الأسئلة الشائعة',
+                'nav_links': 'الموارد',
+                'hero_title': 'مساعد ترخيص الحيوانات الأليفة لدول مجلس التعاون الخليجي',
+                'hero_subtitle': 'قم بتبسيط عملية نقل حيوانك الأليف أو تجديد الترخيص لدول الخليج (مجلس التعاون الخليجي). الأدلة خطوة بخطوة، والمعلومات الخاصة بكل بلد، وتحليل البيانات هنا.',
+                'hero_button': 'ابدأ العملية',
+                'process_title': 'خريطة العملية',
+                'process_subtitle': 'قد تبدو عملية إحضار حيوانك الأليف إلى دول مجلس التعاون الخليجي معقدة. لقد قمنا بتقسيمها إلى 6 خطوات رئيسية. انقر على العناوين للحصول على التفاصيل.',
+                'step1_title': 'الخطوة 1: التخطيط (6+ أشهر مقدمًا)',
+                'step1_desc': '<p><strong>التوقيت:</strong> ابدأ العملية قبل 6 أشهر على الأقل.</p><p><strong>الناقل:</strong> ابحث عن شركات الطيران وخدمات الشحن الصديقة للحيوانات الأليفة (مثل طيران الإمارات للشحن الجوي، الخطوط الجوية القطرية للشحن الجوي).</p><p><strong>التحقق من القواعد:</strong> تحقق من أحدث قواعد الاستيراد لبلد وجهتك (الإمارات، السعودية، قطر، إلخ).</p>',
+                'step2_title': 'الخطوة 2: التحضير البيطري',
+                'step2_desc': '<p><strong>الشريحة الإلكترونية (Microchip):</strong> شريحة إلكترونية متوافقة مع معايير ISO (15 رقمًا) إلزامية. يجب أن تتم جميع الإجراءات *بعد* زرع هذه الشريحة.</p><p><strong>لقاح داء الكلب:</strong> مطلوب لقاح سارٍ المفعول لداء الكلب. عادةً ما يتم إجراؤه خلال العام الماضي ويجب أن يكون قد مر 21 يومًا على الأقل.</p><p><strong>لقاحات أخرى:</strong> التطعيمات الكاملة DHPPL (للكلاب) أو FVRCP (للقطط) مطلوبة.</p>',
+                'step3_title': 'الخطوة 3: اختبار معايرة داء الكلب (Titer Test)',
+                'step3_desc': '<p><strong>المتطلبات:</strong> إلزامي للحيوانات الأليفة القادمة من البلدان "عالية الخطورة" (العديد من البلدان مدرجة في هذه القائمة).</p><p><strong>التوقيت:</strong> يجب أخذ عينة دم بعد 30 يومًا على الأقل *من* التطعيم ضد داء الكلب.</p><p><strong>الصلاحية:</strong> يجب إجراء الاختبار قبل 3 أشهر (90 يومًا) على الأقل من الوصول. قد يستغرق الحصول على النتائج (≥0.5 IU/ml) أسابيع.</p>',
+                'step4_title': 'الخطوة 4: التصاريح والمستندات',
+                'step4_desc': '<p><strong>تصريح الاستيراد:</strong> يجب الحصول عليه من الوزارة المعنية في بلد المقصد (مثل MOCCAE للإمارات، MEWA للسعودية). غالبًا ما يكون هذا التصريح صالحًا لمدة 30 يومًا.</p><p><strong>الشهادة الصحية:</strong> شهادة صحية رسمية معتمدة من الحكومة مطلوبة قبل الرحلة مباشرة (عادةً خلال آخر 10 أيام).</p>',
+                'step5_title': 'الخطوة 5: الشحن والرحلة',
+                'step5_desc': '<p><strong>الشحن (Cargo):</strong> تتطلب معظم دول مجلس التعاون الخليجي وصول الحيوانات الأليفة كشحن جوي (manifested cargo). قد لا يتم قبولها في المقصورة أو كأمتعة زائدة.</p><p><strong>صندوق النقل:</strong> صندوق نقل معتمد من IATA، بحجم مناسب، وآمن إلزامي.</p><p><strong>الحجز:</strong> احجز الرحلة فور الموافقة على تصريح الاستيراد الخاص بك.</p>',
+                'step6_title': 'الخطوة 6: الوصول والتسجيل المحلي',
+                'step6_desc': '<p><strong>الجمارك:</strong> عند الوصول، سيخضع حيوانك الأليف لفحص بيطري وسيتم فحص المستندات. قد يتم تطبيق رسوم جمركية/ضرائب.</p><p><strong>الترخيص المحلي:</strong> بعد دخول البلد (عادةً في غضون أسبوع إلى أسبوعين)، يجب عليك تسجيل حيوانك الأليف لدى البلدية المحلية (مثل بلدية دبي، بلدية أبوظبي) والحصول على ترخيص سنوي (tag).</p>',
+                'guide_title': 'دليل الدول التفاعلي',
+                'guide_subtitle': 'لكل دولة من دول مجلس التعاون الخليجي قواعدها الخاصة. اختر دولة لعرض المتطلبات الأساسية وعمليات الاستيراد والمعلومات حول السلالات المحظورة.',
+                'guide_select_label': 'اختر الدولة:',
+                'guide_disclaimer': 'هذه المعلومات للإرشاد العام فقط. يمكن أن تتغير القواعد بشكل متكرر، لذا تحقق دائمًا من مواقع الوزارات الرسمية (MOCCAE، MEWA، إلخ).',
+                'checklist_title': 'قائمة التحقق من المستندات',
+                'checklist_subtitle': 'استخدم هذه القائمة لتتبع مستندات نقل حيوانك الأليف. اطبع أو احفظ هذه الصفحة للمرجع.',
+                'check1': 'شريحة إلكترونية متوافقة مع ISO 11784/11785 (15 رقمًا) مزروعة ومتحقق منها',
+                'check2': 'شهادة تطعيم داء الكلب سارية المفعول (خلال العام الماضي، على الأقل 21 يومًا)',
+                'check3': 'سجلات التطعيم الكاملة DHPPL (للكلاب) أو FVRCP (للقطط)',
+                'check4': 'نتيجة اختبار معايرة داء الكلب (FAVN/OIE) ≥0.5 IU/ml (إذا لزم الأمر، من البلدان عالية الخطورة)',
+                'check5': 'تصريح استيراد من وزارة بلد المقصد (صالح لمدة 30 يومًا)',
+                'check6': 'شهادة صحية رسمية (صادرة خلال 10 أيام قبل السفر)',
+                'check7': 'شهادة علاج الطفيليات الداخلية/الخارجية (خلال 14 يومًا)',
+                'check8': 'صندوق سفر معتمد من IATA (بحجم مناسب، آمن، مع علامات)',
+                'check9': 'تأكيد حجز الرحلة (بيان الشحن)',
+                'check10': 'جميع المستندات مترجمة ومصدقة (إذا لزم الأمر من قبل بلد المقصد)',
+                'checklist_print': 'طباعة القائمة',
+                'checklist_reset': 'إعادة تعيين',
+                'data_title': 'الأدوات وتحليل البيانات',
+                'data_subtitle': 'استخدم حاسباتنا ورسومنا البيانية لتخطيط الجدول الزمني والميزانية لنقل حيوانك الأليف.',
+                'timeline_title': 'حاسبة الجدول الزمني',
+                'timeline_subtitle': 'أدخل تاريخ البدء المخطط لحساب تواريخ المعالم المهمة.',
+                'timeline_start_label': 'تاريخ البدء:',
+                'timeline_pet_label': 'نوع الحيوان الأليف:',
+                'timeline_high_risk': 'من بلد عالي الخطورة (اختبار المعايرة مطلوب)',
+                'timeline_low_risk': 'من بلد منخفض الخطورة (لا حاجة لاختبار المعايرة)',
+                'timeline_calculate': 'حساب الجدول الزمني',
+                'timeline_microchip': 'زرع الشريحة الإلكترونية:',
+                'timeline_rabies': 'تطعيم داء الكلب:',
+                'timeline_titer': 'عينة دم اختبار المعايرة:',
+                'timeline_titer_result': 'نتائج اختبار المعايرة المتوقعة:',
+                'timeline_permit': 'التقدم بطلب تصريح الاستيراد:',
+                'timeline_health': 'الشهادة الصحية (آخر 10 أيام):',
+                'timeline_travel': 'أقرب تاريخ سفر:',
+                'cost_title': 'حاسبة التكلفة',
+                'cost_subtitle': 'قدر تكاليف نقل حيوانك الأليف بناءً على الوجهة ونوع الحيوان الأليف.',
+                'cost_country_label': 'بلد المقصد:',
+                'cost_pet_label': 'نوع الحيوان الأليف:',
+                'cost_titer_label': 'اختبار المعايرة مطلوب:',
+                'cost_relocator_label': 'استخدام خدمة نقل الحيوانات الأليفة:',
+                'cost_yes': 'نعم',
+                'cost_no': 'لا',
+                'cost_calculate': 'حساب التكلفة المقدرة',
+                'cost_vet': 'التكاليف البيطرية (اللقاحات، الاختبارات، الشريحة):',
+                'cost_permit': 'رسوم التصاريح والمستندات:',
+                'cost_cargo': 'رسوم الشحن وخدمة النقل:',
+                'cost_other': 'أخرى (صندوق السفر، التصديق، إلخ):',
+                'cost_total': 'إجمالي التكلفة المقدرة (باستثناء الرحلة):',
+                'cost_note': 'ملاحظة: تختلف تكاليف الرحلة بشكل كبير حسب شركة الطيران والمسار وحجم الحيوان الأليف. اتصل بشركات الطيران مباشرة للحصول على عروض أسعار دقيقة.',
+                'temp_title': 'قيود درجة الحرارة',
+                'temp_restricted': 'فترات السفر المقيدة:',
+                'temp_info': 'معظم دول مجلس التعاون الخليجي تقيد سفر الحيوانات الأليفة خلال أشهر الصيف (عادة مايو-سبتمبر) عندما تتجاوز درجات الحرارة الحدود الآمنة. قد ترفض شركات الطيران نقل الحيوانات الأليفة عندما تكون درجات الحرارة الأرضية أعلى من 29°م (85°ف) أو أقل من 7°م (45°ف).',
+                'temp_brachy': 'تحذير خاص للسلالات قصيرة الأنف:',
+                'temp_brachy_info': 'السلالات قصيرة الأنف (البلدوغ، البج، القطط الفارسية، إلخ) معرضة لخطر أكبر في الطقس الحار. بعض شركات الطيران لديها قيود إضافية أو قد ترفض هذه السلالات تمامًا خلال أشهر الصيف.',
+                'temp_check': 'تحقق دائمًا:',
+                'temp_check_info': 'اتصل بشركة الطيران مباشرة قبل الحجز. تختلف قيود درجة الحرارة حسب شركة الطيران ويمكن أن تتغير يوميًا بناءً على توقعات الطقس في المطارات الأصلية والوجهة والعبور.',
+                'chart1_title': 'وقت التحضير المقدر (أسابيع)',
+                'chart1_subtitle': 'الوقت الإجمالي المطلوب، بما في ذلك فترة انتظار اختبار معايرة داء الكلب (3 أشهر).',
+                'chart2_title': 'توزيع التكلفة المقدرة (٪)',
+                'chart2_subtitle': 'توزيع تقديري لتكاليف التحضير، باستثناء أسعار تذاكر الطيران.',
+                'chart3_title': 'الأخطاء الأكثر شيوعًا (٪)',
+                'chart3_subtitle': 'الأخطاء الشائعة التي تؤدي إلى رفض الطلب أو تأخيره.',
+                'faq_title': 'الأسئلة الشائعة',
+                'faq1_q': 'ما هي الشريحة الإلكترونية ولماذا هي إلزامية؟',
+                'faq1_a': 'الشريحة الإلكترونية هي بطاقة هوية إلكترونية دائمة (بحجم حبة الأرز) لحيوانك الأليف. هي إلزامية في دول مجلس التعاون الخليجي لتعقب الحيوانات المفقودة/المسروقة، وإثبات الملكية، والصحة العامة (تتبع داء الكلب). يجب أن تتم جميع التطعيمات والاختبارات *بعد* زرع هذه الشريحة.',
+                'faq2_q': 'هل اختبار معايرة داء الكلب مطلوب دائمًا؟',
+                'faq2_a': 'لا، ولكن نعم للحيوانات الأليفة القادمة من البلدان "عالية الخطورة" (معظم أوروبا، تركيا، الولايات المتحدة الأمريكية، كندا، إلخ). إذا كنت قادمًا من بلد "منخفض الخطورة" (خالٍ من داء الكلب) (مثل أستراليا، نيوزيلندا، اليابان، المملكة المتحدة)، فعادةً لا يكون مطلوبًا. ومع ذلك، يمكن أن تتغير هذه القائمة، تحقق من قائمة MOCCAE للإمارات.',
+                'faq3_q': 'هل يمكن لحيواني الأليف السفر معي في المقصورة؟',
+                'faq3_a': 'عادة لا. معظم دول مجلس التعاون الخليجي (خاصة الإمارات وقطر والسعودية) تسمح فقط بدخول الحيوانات الأليفة كـ "شحن جوي معلن". هذا يعني أنه يجب استلام الحيوان من محطة شحن خاصة عبر إجراءات محددة. قد توجد استثناءات (مثل كلاب الإرشاد)، ولكن بالنسبة للحيوانات الأليفة العادية، الشحن هو القاعدة.',
+                'faq4_q': 'ما هي السلالة المقيدة/المحظورة؟',
+                'faq4_a': 'تحظر جميع دول مجلس التعاون الخليجي استيراد وامتلاك سلالات معينة من الكلاب (أو هجينها) تعتبر "خطيرة". تختلف هذه القائمت حسب البلد ولكنها غالبًا ما تشمل Pit Bull Terriers و Staffordshire Terriers و Tosa Inu و Dogo Argentino و Fila Brasileiro وبعض أنواع Mastiff. لا تبدأ العملية دون التحقق من القائمة الخاصة بالبلد.',
+                'faq5_q': 'هل توجد قيود عمرية لاستيراد الحيوانات الأليفة؟',
+                'faq5_a': 'نعم. تتطلب معظم دول مجلس التعاون الخليجي أن يكون الحيوان الأليف على الأقل 4 أشهر (بعضها يتطلب 6 أشهر) للسماح بجداول التطعيم الكاملة. عادة لا يوجد حد أقصى للعمر، ولكن الحيوانات الأليفة القديمة جدًا قد تتطلب وثائق صحية إضافية. لا يمكن استيراد الجراء والقطط الصغيرة تحت الحد الأدنى للعمر.',
+                'faq6_q': 'هل يمكنني إحضار حيوانات أليفة متعددة؟',
+                'faq6_a': 'تختلف الحدود حسب البلد. تسمح السعودية عادةً بما يصل إلى حيوانين أليفين لكل شخص. قد يكون لدى الإمارات ودول أخرى حدود مختلفة. يتطلب كل حيوان أليف تصاريح ومستندات ورسوم منفصلة. تحقق من لوائح البلد المحدد قبل التخطيط لاستيراد حيوانات أليفة متعددة.',
+                'faq7_q': 'هل الحجر الصحي مطلوب عند الوصول؟',
+                'faq7_a': 'بشكل عام، لا يلزم الحجر الصحي إذا كانت جميع المستندات في حالة جيدة ووصل الحيوان الأليف بتصاريح مناسبة. ومع ذلك، إذا كانت المستندات غير مكتملة أو كانت هناك مخاوف صحية، قد يتم فرض الحجر الصحي المؤقت. قد تواجه الحيوانات الأليفة من بلدان معينة أو بسجلات تطعيم غير مكتملة متطلبات الحجر الصحي.',
+                'faq8_q': 'كيف أجدد ترخيص حيواني الأليف بعد الوصول؟',
+                'faq8_a': 'بعد دخول البلد، يجب عليك تسجيل حيوانك الأليف لدى البلدية المحلية (مثل بلدية دبي، بلدية أبوظبي) في غضون 1-2 أسبوع. ستحصل على علامة ترخيص سنوية. التجديد مطلوب سنويًا، عادةً قبل انتهاء صلاحية الترخيص. حافظ على تحديث سجلات التطعيم للتجديد. تختلف الرسوم حسب الإمارة/المدينة.',
+                'links_title': 'الموارد وجهات الاتصال الطارئة',
+                'links_official': 'مواقع الحكومة الرسمية',
+                'links_airlines': 'سياسات شركات الطيران للحيوانات الأليفة',
+                'links_emergency': 'جهات الاتصال الطارئة',
+                'links_additional': 'موارد إضافية',
+                'emergency_note': 'في حالة الطوارئ أثناء سفر الحيوان الأليف:',
+                'emergency_info': 'اتصل بقسم الشحن في شركة الطيران على الفور. احتفظ برقم الشريحة الإلكترونية لحيوانك الأليف وتفاصيل الرحلة وجميع المستندات جاهزة. لحالات الطوارئ البيطرية في الوجهة، اتصل بالعيادات البيطرية الطارئة المحلية أو خدمات بيطرية المطار.',
+                'emergency_airport': 'خدمات بيطرية المطار:',
+                'emergency_airport_info': 'معظم مطارات مجلس التعاون الخليجي لديها خدمات بيطرية على مدار الساعة. عادة ما تكون معلومات الاتصال متاحة في محطة الشحن أو من خلال شركة الطيران.',
+                'popup_title': 'ادعم هذا المشروع',
+                'popup_message': 'إذا وجدت هذا المورد مفيدًا، يرجى التفكير في دعم المشروع. مساهمتك تساعد في الحفاظ على هذه الخدمة المجانية وتحسينها.',
+                'popup_email': 'PayPal:',
+                'popup_button': 'تبرع عبر PayPal',
+                'popup_close': 'ربما لاحقًا',
+                'popup_note': 'أو أرسل مباشرة إلى:',
+                'footer_copy': '© 2025 مساعد ترخيص الحيوانات الأليفة لدول مجلس التعاون الخليجي. جميع الحقوق محفوظة.',
+                'footer_disclaimer': 'إخلاء المسؤولية: هذا الموقع للأغراض الإعلامية فقط ولا يشكل نصيحة قانونية. يرجى استشارة الجهات الحكومية الرسمية في البلدان المعنية للحصول على أحدث وأدق المعلومات.',
+                'chart1_label': 'وقت التحضير المقدر (أسابيع)',
+                'chart1_tooltip_suffix': 'أسابيع (حوالي {months} أشهر)',
+                'chart2_labels': ['طبيب بيطري (لقاح، اختبار، شريحة)', 'رسوم التصاريح والمستندات', 'رسوم الشحن والناقل', 'أخرى (صندوق النقل، إلخ)'],
+                'chart3_labels': ['خطأ في توقيت اختبار المعايرة', 'سجل لقاحات ناقص/خاطئ', 'انتهاء صلاحية تصريح الاستيراد', 'عدم تطابق/خطأ في الشريحة', 'أخطاء أخرى في الأوراق'],
+                'guide_detail_h4_1': 'المتطلبات الأساسية والترخيص المحلي',
+                'guide_detail_h4_2': 'عملية الاستيراد والمستندات',
+                'guide_detail_h4_3': 'السلالات المحظورة / المقيدة',
+                'country_bae': 'الإمارات العربية المتحدة (UAE)',
+                'country_suudi': 'المملكة العربية السعودية',
+                'country_katar': 'قطر',
+                'country_kuveyt': 'الكويت',
+                'country_bahreyn': 'البحرين',
+                'country_umman': 'عمان'
+            },
+            'hi': {
+                'title': 'जीसीसी पालतू लाइसेंस सहायक',
+                'nav_home': 'होम',
+                'nav_process': 'प्रक्रिया मानचित्र',
+                'nav_guide': 'देश गाइड',
+                'nav_checklist': 'चेकलिस्ट',
+                'nav_data': 'उपकरण',
+                'nav_faq': 'सामान्य प्रश्न',
+                'nav_links': 'संसाधन',
+                'hero_title': 'जीसीसी पालतू लाइसेंस सहायक',
+                'hero_subtitle': 'खाड़ी (जीसीसी) देशों के लिए अपने पालतू जानवरों के स्थानांतरण या लाइसेंस नवीनीकरण प्रक्रिया को सरल बनाएं। चरण-दर-चरण गाइड, देश-विशिष्ट जानकारी और डेटा विश्लेषण यहाँ हैं।',
+                'hero_button': 'प्रक्रिया शुरू करें',
+                'process_title': 'प्रक्रिया मानचित्र',
+                'process_subtitle': 'अपने पालतू जानवर को जीसीसी देशों में लाने की प्रक्रिया जटिल लग सकती है। हमने इसे 6 मुख्य चरणों में विभाजित किया है। विवरण के लिए शीर्षकों पर क्लिक करें।',
+                'step1_title': 'चरण 1: योजना (6+ महीने पहले)',
+                'step1_desc': '<p><strong>समय:</strong> प्रक्रिया को कम से कम 6 महीने पहले शुरू करें।</p><p><strong>ट्रांसपोर्टर:</strong> पालतू-मैत्रीपूर्ण एयरलाइंस और कार्गो सेवाओं (जैसे, एमिरेट्स स्काईकार्गो, कतर एयरवेज कार्गो) पर शोध करें।</p><p><strong>नियम जांच:</strong> अपने गंतव्य देश (यूएई, सऊदी अरब, कतर, आदि) के लिए सबसे मौजूदा आयात नियमों की जांच करें।</p>',
+                'step2_title': 'चरण 2: पशु चिकित्सा तैयारी',
+                'step2_desc': '<p><strong>माइक्रोचिप:</strong> एक 15-अंकीय, आईएसओ 11784/11785 अनुपालक माइक्रोचिप अनिवार्य है। सभी प्रक्रियाएं इस चिप को लगाने के *बाद* की जानी चाहिए।</p><p><strong>रेबीज वैक्सीन:</strong> एक वैध रेबीज वैक्सीन की आवश्यकता है। आमतौर पर पिछले 1 साल के भीतर किया जाता है और कम से कम 21 दिन बीत चुके होने चाहिए।</p><p><strong>अन्य टीके:</strong> पूर्ण DHPPL (कुत्तों के लिए) या FVRCP (बिल्लियों के लिए) टीकाकरण की आवश्यकता है।</p>',
+                'step3_title': 'चरण 3: रेबीज टाइटर टेस्ट',
+                'step3_desc': '<p><strong>आवश्यकता:</strong> "उच्च जोखिम" वाले देशों (इस सूची में कई देश शामिल हैं) से आने वाले पालतू जानवरों के लिए अनिवार्य है।</p><p><strong>समय:</strong> रेबीज टीकाकरण के कम से कम 30 दिन *बाद* रक्त का नमूना लिया जाना चाहिए।</p><p><strong>वैधता:</strong> परीक्षण आगमन से कम से कम 3 महीने (90 दिन) पहले किया जाना चाहिए। परिणाम (≥0.5 IU/ml) प्राप्त करने में सप्ताह लग सकते हैं।</p>',
+                'step4_title': 'चरण 4: परमिट और दस्तावेज़',
+                'step4_desc': '<p><strong>आयात परमिट:</strong> गंतव्य देश के संबंधित मंत्रालय (जैसे, यूएई के लिए एमओसीसीएई, सऊदी अरब के लिए एमईडब्ल्यूए) से प्राप्त किया जाना चाहिए। यह परमिट अक्सर 30 दिनों के लिए वैध होता है।</p><p><strong>स्वास्थ्य प्रमाणपत्र:</strong> उड़ान से ठीक पहले (आमतौर पर पिछले 10 दिनों के भीतर) एक आधिकारिक, सरकारी-समर्थित स्वास्थ्य प्रमाणपत्र की आवश्यकता होती है।</p>',
+                'step5_title': 'चरण 5: शिपिंग और उड़ान',
+                'step5_desc': '<p><strong>कार्गो:</strong> अधिकांश जीसीसी देशों को पालतू जानवरों को मैनिफेस्टेड कार्गो के रूप में आने की आवश्यकता होती है। उन्हें इन-केबिन या अतिरिक्त सामान के रूप में स्वीकार नहीं किया जा सकता है।</p><p><strong>यात्रा क्रेट:</strong> एक आईएटीए-अनुमोदित, उचित आकार का और सुरक्षित यात्रा क्रेट अनिवार्य है।</p><p><strong>बुकिंग:</strong> अपने आयात परमिट को मंजूरी मिलने के तुरंत बाद उड़ान बुक करें।</p>',
+                'step6_title': 'चरण 6: आगमन और स्थानीय पंजीकरण',
+                'step6_desc': '<p><strong>सीमा शुल्क:</strong> आगमन पर, आपके पालतू जानवर की पशु चिकित्सा जांच होगी और दस्तावेजों का निरीक्षण किया जाएगा। सीमा शुल्क/कर लागू हो सकते हैं।</p><p><strong>स्थानीय लाइसेंस:</strong> देश में प्रवेश करने के बाद (आमतौर पर 1-2 सप्ताह के भीतर), आपको अपने पालतू जानवर को स्थानीय नगरपालिका (जैसे, दुबई नगर पालिका, अबू धाबी नगर पालिका) के साथ पंजीकृत करना होगा और एक वार्षिक लाइसेंस (टैग) प्राप्त करना होगा।</p>',
+                'guide_title': 'इंटरैक्टिव देश गाइड',
+                'guide_subtitle': 'प्रत्येक जीसीसी देश के अपने विशिष्ट नियम हैं। बुनियादी आवश्यकताओं, आयात प्रक्रियाओं और प्रतिबंधित नस्लों की जानकारी देखने के लिए एक देश चुनें।',
+                'guide_select_label': 'देश चुनें:',
+                'guide_disclaimer': 'यह जानकारी केवल सामान्य मार्गदर्शन के लिए है। नियम अक्सर बदल सकते हैं, इसलिए हमेशा आधिकारिक मंत्रालय (एमओसीसीएई, एमईडब्ल्यूए, आदि) की वेबसाइटों की जांच करें।',
+                'checklist_title': 'दस्तावेज़ चेकलिस्ट',
+                'checklist_subtitle': 'अपने पालतू जानवरों के स्थानांतरण दस्तावेज़ों को ट्रैक करने के लिए इस चेकलिस्ट का उपयोग करें। संदर्भ के लिए इस पृष्ठ को प्रिंट करें या सहेजें।',
+                'check1': 'ISO 11784/11785 अनुपालक 15-अंकीय माइक्रोचिप लगाई गई और सत्यापित',
+                'check2': 'वैध रेबीज टीकाकरण प्रमाणपत्र (पिछले 1 वर्ष के भीतर, कम से कम 21 दिन पुराना)',
+                'check3': 'पूर्ण DHPPL (कुत्तों) या FVRCP (बिल्लियों) टीकाकरण रिकॉर्ड',
+                'check4': 'रेबीज टाइटर टेस्ट (FAVN/OIE) परिणाम ≥0.5 IU/ml (यदि आवश्यक हो, उच्च जोखिम वाले देशों से)',
+                'check5': 'गंतव्य देश मंत्रालय से आयात परमिट (30 दिनों के लिए वैध)',
+                'check6': 'आधिकारिक स्वास्थ्य प्रमाणपत्र (यात्रा से 10 दिन पहले जारी)',
+                'check7': 'आंतरिक/बाहरी परजीवी उपचार प्रमाणपत्र (14 दिनों के भीतर)',
+                'check8': 'IATA-अनुमोदित यात्रा क्रेट (उचित आकार, सुरक्षित, लेबल किया गया)',
+                'check9': 'उड़ान बुकिंग पुष्टि (कार्गो मैनिफेस्ट)',
+                'check10': 'सभी दस्तावेज़ अनुवादित और प्रमाणित (यदि गंतव्य देश द्वारा आवश्यक)',
+                'checklist_print': 'चेकलिस्ट प्रिंट करें',
+                'checklist_reset': 'रीसेट',
+                'data_title': 'उपकरण और डेटा विश्लेषण',
+                'data_subtitle': 'अपने पालतू जानवरों के स्थानांतरण समयरेखा और बजट की योजना बनाने के लिए हमारे कैलकुलेटर और चार्ट का उपयोग करें।',
+                'timeline_title': 'समयरेखा कैलकुलेटर',
+                'timeline_subtitle': 'महत्वपूर्ण मील के पत्थर की तारीखों की गणना करने के लिए अपनी नियोजित प्रारंभ तिथि दर्ज करें।',
+                'timeline_start_label': 'प्रारंभ तिथि:',
+                'timeline_pet_label': 'पालतू प्रकार:',
+                'timeline_high_risk': 'उच्च जोखिम वाले देश से (टाइटर टेस्ट आवश्यक)',
+                'timeline_low_risk': 'कम जोखिम वाले देश से (कोई टाइटर टेस्ट नहीं)',
+                'timeline_calculate': 'समयरेखा की गणना करें',
+                'timeline_microchip': 'माइक्रोचिप प्रत्यारोपण:',
+                'timeline_rabies': 'रेबीज टीकाकरण:',
+                'timeline_titer': 'टाइटर टेस्ट रक्त नमूना:',
+                'timeline_titer_result': 'टाइटर टेस्ट परिणाम अपेक्षित:',
+                'timeline_permit': 'आयात परमिट के लिए आवेदन करें:',
+                'timeline_health': 'स्वास्थ्य प्रमाणपत्र (अंतिम 10 दिन):',
+                'timeline_travel': 'सबसे पहले यात्रा तिथि:',
+                'cost_title': 'लागत कैलकुलेटर',
+                'cost_subtitle': 'गंतव्य और पालतू प्रकार के आधार पर अपने पालतू जानवरों के स्थानांतरण लागत का अनुमान लगाएं।',
+                'cost_country_label': 'गंतव्य देश:',
+                'cost_pet_label': 'पालतू प्रकार:',
+                'cost_titer_label': 'टाइटर टेस्ट आवश्यक:',
+                'cost_relocator_label': 'पालतू रिलोकेटर सेवा का उपयोग करें:',
+                'cost_yes': 'हाँ',
+                'cost_no': 'नहीं',
+                'cost_calculate': 'अनुमानित लागत की गणना करें',
+                'cost_vet': 'पशु चिकित्सा लागत (टीके, परीक्षण, माइक्रोचिप):',
+                'cost_permit': 'परमिट और दस्तावेज़ शुल्क:',
+                'cost_cargo': 'कार्गो और रिलोकेटर शुल्क:',
+                'cost_other': 'अन्य (क्रेट, प्रमाणन, आदि):',
+                'cost_total': 'कुल अनुमानित लागत (उड़ान को छोड़कर):',
+                'cost_note': 'नोट: उड़ान लागत एयरलाइन, मार्ग और पालतू आकार के अनुसार काफी भिन्न होती है। सटीक उद्धरण के लिए सीधे एयरलाइनों से संपर्क करें।',
+                'temp_title': 'तापमान प्रतिबंध',
+                'temp_restricted': 'प्रतिबंधित यात्रा अवधि:',
+                'temp_info': 'अधिकांश जीसीसी देश गर्मी के महीनों (आमतौर पर मई-सितंबर) के दौरान पालतू यात्रा को प्रतिबंधित करते हैं जब तापमान सुरक्षित सीमा से अधिक हो जाता है। एयरलाइनें जमीनी तापमान 29°C (85°F) से ऊपर या 7°C (45°F) से नीचे होने पर पालतू जानवरों को परिवहन करने से इनकार कर सकती हैं।',
+                'temp_brachy': 'ब्रैकीसेफेलिक नस्लों के लिए विशेष चेतावनी:',
+                'temp_brachy_info': 'छोटी नाक वाली नस्लें (बुलडॉग, पग, फारसी बिल्लियाँ, आदि) गर्म मौसम में अधिक जोखिम में हैं। कुछ एयरलाइनों के पास अतिरिक्त प्रतिबंध हैं या गर्मी के महीनों के दौरान इन नस्लों को पूरी तरह से अस्वीकार कर सकती हैं।',
+                'temp_check': 'हमेशा जांचें:',
+                'temp_check_info': 'बुकिंग से पहले सीधे अपनी एयरलाइन से संपर्क करें। तापमान प्रतिबंध एयरलाइन के अनुसार भिन्न होते हैं और मूल, गंतव्य और पारगमन हवाई अड्डों पर मौसम पूर्वानुमान के आधार पर दैनिक रूप से बदल सकते हैं।',
+                'chart1_title': 'अनुमानित तैयारी समय (सप्ताह)',
+                'chart1_subtitle': 'रेबीज टाइटर टेस्ट की प्रतीक्षा अवधि (3 महीने) सहित कुल आवश्यक समय।',
+                'chart2_title': 'अनुमानित लागत विवरण (%)',
+                'chart2_subtitle': 'उड़ान किराए को छोड़कर, तैयारी लागत का अनुमानित विवरण।',
+                'chart3_title': 'सबसे आम त्रुटियां (%)',
+                'chart3_subtitle': 'आम गलतियाँ जो आवेदन अस्वीकृति या देरी का कारण बनती हैं।',
+                'faq_title': 'अक्सर पूछे जाने वाले प्रश्न (सामान्य प्रश्न)',
+                'faq1_q': 'माइक्रोचिप क्या है और यह अनिवार्य क्यों है?',
+                'faq1_a': 'माइक्रोचिप आपके पालतू जानवर के लिए एक स्थायी इलेक्ट्रॉनिक आईडी टैग (चावल के दाने के आकार का) है। जीसीसी देशों में खोए/चोरी हुए पालतू जानवरों पर नज़र रखने, स्वामित्व के प्रमाण और सार्वजनिक स्वास्थ्य (रेबीज ट्रैकिंग) के लिए यह अनिवार्य है। सभी टीकाकरण और परीक्षण इस चिप को लगाने के *बाद* किए जाने चाहिए।',
+                'faq2_q': 'क्या रेबीज टाइटर टेस्ट हमेशा आवश्यक होता है?',
+                'faq2_a': 'नहीं, लेकिन "उच्च जोखिम" वाले देशों (अधिकांश यूरोप, तुर्की, यूएसए, कनाडा, आदि) से आने वाले पालतू जानवरों के लिए हां। यदि आप "कम जोखिम" (रेबीज-मुक्त) देश (जैसे, ऑस्ट्रेलिया, न्यूजीलैंड, जापान, यूके) से आ रहे हैं, तो आमतौर पर इसकी आवश्यकता नहीं होती है। हालांकि, यह सूची बदल सकती है, यूएई के लिए एमओसीसीएई सूची की जांच करें।',
+                'faq3_q': 'क्या मेरा पालतू मेरे साथ केबिन में यात्रा कर सकता है?',
+                'faq3_a': 'आमतौर पर, नहीं। अधिकांश जीसीसी देश (विशेषकर यूएई, कतर, सऊदी अरब) पालतू जानवरों को केवल "मैनिफेस्टेड कार्गो" के रूप में प्रवेश करने की अनुमति देते हैं। इसका मतलब है कि जानवर को विशिष्ट प्रक्रियाओं के माध्यम से एक विशेष कार्गो टर्मिनल से एकत्र किया जाना चाहिए। अपवाद मौजूद हो सकते हैं (जैसे, गाइड डॉग), लेकिन मानक पालतू जानवरों के लिए, कार्गो नियम है।',
+                'faq4_q': 'एक प्रतिबंधित/प्रतिबंधित नस्ल क्या है?',
+                'faq4_a': 'सभी जीसीसी देश कुछ कुत्तों की नस्लों (या उनके मिश्रण) के आयात और स्वामित्व पर रोक लगाते हैं जिन्हें "खतरनाक" माना जाता है। ये सूचियाँ देश के अनुसार भिन्न होती हैं लेकिन अक्सर इनमें पिट बुल टेरियर्स, स्टैफ़ोर्डशायर टेरियर्स, टोसा इनु, डोगो अर्जेंटीनो, फिला ब्रासीलेरो और कुछ मास्टिफ़ प्रकार शामिल होते हैं। देश-विशिष्ट सूची की जाँच किए बिना प्रक्रिया शुरू न करें।',
+                'faq5_q': 'क्या पालतू जानवरों के आयात के लिए आयु प्रतिबंध हैं?',
+                'faq5_a': 'हाँ। अधिकांश जीसीसी देश पूर्ण टीकाकरण अनुसूची की अनुमति देने के लिए पालतू जानवरों को कम से कम 4 महीने पुराना (कुछ 6 महीने की आवश्यकता होती है) की आवश्यकता होती है। आमतौर पर कोई अधिकतम आयु सीमा नहीं होती है, लेकिन बहुत पुराने पालतू जानवरों को अतिरिक्त स्वास्थ्य दस्तावेज़ की आवश्यकता हो सकती है। न्यूनतम आयु के तहत पिल्ले और बिल्ली के बच्चे आयात नहीं किए जा सकते।',
+                'faq6_q': 'क्या मैं कई पालतू जानवर ला सकता हूँ?',
+                'faq6_a': 'सीमाएँ देश के अनुसार भिन्न होती हैं। सऊदी अरब आमतौर पर प्रति व्यक्ति 2 पालतू जानवरों तक की अनुमति देता है। यूएई और अन्य देशों की अलग-अलग सीमाएँ हो सकती हैं। प्रत्येक पालतू जानवर को अलग परमिट, दस्तावेज़ और शुल्क की आवश्यकता होती है। कई पालतू जानवरों को आयात करने की योजना बनाने से पहले विशिष्ट देश के नियमों की जांच करें।',
+                'faq7_q': 'क्या आगमन पर संगरोध आवश्यक है?',
+                'faq7_a': 'सामान्य तौर पर, यदि सभी दस्तावेज़ क्रम में हैं और पालतू जानवर उचित परमिट के साथ आता है तो संगरोध की आवश्यकता नहीं है। हालांकि, यदि दस्तावेज़ अधूरे हैं या स्वास्थ्य संबंधी चिंताएं हैं, तो अस्थायी संगरोध लागू किया जा सकता है। कुछ देशों से या अधूरे टीकाकरण रिकॉर्ड वाले पालतू जानवरों को संगरोध आवश्यकताओं का सामना करना पड़ सकता है।',
+                'faq8_q': 'आगमन के बाद मैं अपने पालतू जानवर का लाइसेंस कैसे नवीनीकृत करूं?',
+                'faq8_a': 'देश में प्रवेश करने के बाद, आपको अपने पालतू जानवर को स्थानीय नगरपालिका (जैसे, दुबई नगर पालिका, अबू धाबी नगर पालिका) के साथ 1-2 सप्ताह के भीतर पंजीकृत करना होगा। आपको एक वार्षिक लाइसेंस टैग मिलेगा। नवीनीकरण वार्षिक रूप से आवश्यक है, आमतौर पर लाइसेंस समाप्त होने से पहले। नवीनीकरण के लिए टीकाकरण रिकॉर्ड को अप to date रखें। शुल्क एमिरेट/शहर के अनुसार भिन्न होते हैं।',
+                'links_title': 'संसाधन और आपातकालीन संपर्क',
+                'links_official': 'आधिकारिक सरकारी वेबसाइटें',
+                'links_airlines': 'एयरलाइन पालतू नीतियां',
+                'links_emergency': 'आपातकालीन संपर्क',
+                'links_additional': 'अतिरिक्त संसाधन',
+                'emergency_note': 'पालतू यात्रा के दौरान आपातकाल की स्थिति में:',
+                'emergency_info': 'तुरंत अपनी एयरलाइन के कार्गो विभाग से संपर्क करें। अपने पालतू जानवर की माइक्रोचिप संख्या, उड़ान विवरण और सभी दस्तावेज़ तैयार रखें। गंतव्य पर पशु चिकित्सा आपात स्थितियों के लिए, स्थानीय आपातकालीन पशु चिकित्सा क्लीनिक या हवाई अड्डे की पशु चिकित्सा सेवाओं से संपर्क करें।',
+                'emergency_airport': 'हवाई अड्डा पशु चिकित्सा सेवाएं:',
+                'emergency_airport_info': 'अधिकांश जीसीसी हवाई अड्डों में 24/7 पशु चिकित्सा सेवाएं हैं। संपर्क जानकारी आमतौर पर कार्गो टर्मिनल पर या अपनी एयरलाइन के माध्यम से उपलब्ध होती है।',
+                'popup_title': 'इस परियोजना का समर्थन करें',
+                'popup_message': 'यदि आपको यह संसाधन उपयोगी लगा, तो कृपया परियोजना का समर्थन करने पर विचार करें। आपका योगदान इस मुफ्त सेवा को बनाए रखने और सुधारने में मदद करता है।',
+                'popup_email': 'PayPal:',
+                'popup_button': 'PayPal के माध्यम से दान करें',
+                'popup_close': 'शायद बाद में',
+                'popup_note': 'या सीधे भेजें:',
+                'footer_copy': '© 2025 जीसीसी पालतू लाइसेंस सहायक। सर्वाधिकार सुरक्षित।',
+                'footer_disclaimer': 'अस्वीकरण: यह वेबसाइट केवल सूचना के उद्देश्यों के लिए है और कानूनी सलाह नहीं देती है। नवीनतम और सटीक जानकारी के लिए कृपया संबंधित देशों की आधिकारिक सरकारी एजेंसियों से परामर्श करें।',
+                'chart1_label': 'अनुमानित तैयारी समय (सप्ताह)',
+                'chart1_tooltip_suffix': 'सप्ताह (लगभग {months} महीने)',
+                'chart2_labels': ['पशु चिकित्सक (वैक्सीन, टेस्ट, चिप)', 'परमिट और दस्तावेज़ शुल्क', 'कार्गो और रिलोकेटर शुल्क', 'अन्य (क्रेट, आदि)'],
+                'chart3_labels': ['टाइटर टेस्ट टाइमिंग त्रुटि', 'गुम/गलत वैक्सीन रिकॉर्ड', 'समाप्त आयात परमिट', 'माइक्रोचिप बेमेल/त्रुटि', 'अन्य कागजी त्रुटियां'],
+                'guide_detail_h4_1': 'बुनियादी आवश्यकताएं और स्थानीय लाइसेंस',
+                'guide_detail_h4_2': 'आयात प्रक्रिया और दस्तावेज़',
+                'guide_detail_h4_3': 'प्रतिबंधित / प्रतिबंधित नस्लें',
+                'country_bae': 'संयुक्त अरब अमीरात (यूएई)',
+                'country_suudi': 'सऊदी अरब',
+                'country_katar': 'कतर',
+                'country_kuveyt': 'कुवैत',
+                'country_bahreyn': 'बहरीन',
+                'country_umman': 'ओमान'
+            }
+        };
+
+        // --- COUNTRY DETAILS (INTERNATIONALIZED) ---
+        
+        const ulkeVerisi_en = {
+            'bae': {
+                baslik: 'United Arab Emirates (UAE)',
+                gereklilik: 'Mandatory microchip, rabies vaccine, and DHPPL/FVRCP. Annual municipality (DM/AD) registration and "tag" are mandatory.',
+                ithalat: 'Import permit via MOCCAE (Ministry of Climate Change and Environment) (valid 30 days). Rabies Titer Test from high-risk countries (90 days before arrival) and internal/external parasite treatment (last 14 days) are mandatory. Pets must arrive as cargo only (Dubai: DXB, Abu Dhabi: AUH).',
+                yasaklar: 'Many breeds are banned, including Pit Bull, Staffordshire Terrier, Tosa Inu, Dogo Argentino, Fila Brasileiro, and Mastiffs. Some breeds like Rottweiler and Doberman are restricted (can only be imported for police/military purposes).'
+            },
+            'suudi': {
+                baslik: 'Saudi Arabia',
+                gereklilik: 'Mandatory microchip and rabies vaccine. Local vet registration is recommended after entry.',
+                ithalat: 'Import permit via MEWA (Ministry of Environment, Water and Agriculture). Rabies Titer Test is mandatory from many countries (including Turkey). Rules like the pet being older than 6 months and not more than 2 pets per person apply.',
+                yasaklar: 'Banned breeds list is similar to UAE (Pit Bull, Rottweiler, Mastiffs, etc.). It can also be difficult to import some breeds not classified as "guard" dogs.'
+            },
+            'katar': {
+                baslik: 'Qatar',
+                gereklilik: 'Mandatory microchip, rabies, and other core vaccines.',
+                ithalat: 'Import permit from MME (Ministry of Municipality and Environment) Animal Welfare Dept. Rabies Titer Test is mandatory from high-risk countries (90-day wait). Permit is valid for 30 days.',
+                yasaklar: 'A list of banned breeds exists (Pit Bull, Tosa, Dogo Argentino, etc.). Importing some large breeds can be difficult.'
+            },
+            'kuveyt': {
+                baslik: 'Kuwait',
+                gereklilik: 'Microchip and full vaccination schedule (including rabies).',
+                ithalat: 'Import permit from PAAF (Public Authority of Agriculture and Fish Affairs) is required. Rabies Titer Test is mandatory from high-risk countries. All documents may need to be attested by the Kuwaiti Consulate.',
+                yasaklar: 'A banned breeds list similar to UAE exists, including Pit Bull, Doberman, Rottweiler, and Mastiff types.'
+            },
+            'bahreyn': {
+                baslik: 'Bahrain',
+                gereklilik: 'Microchip and full vaccination schedule.',
+                ithalat: 'Import permit and Rabies Titer Test (from high-risk countries) are required. Bahrain offers an easier process (Category 1) for pets from certain "low-risk" countries.',
+                yasaklar: 'A list of banned breeds is available. Pit Bulls and their mixes are strictly banned.'
+            },
+            'umman': {
+                baslik: 'Oman',
+                gereklilik: 'Microchip, rabies vaccine, and other core vaccines.',
+                ithalat: 'Import permit from the Ministry of Agriculture and Fisheries is required. Rabies Titer Test is mandatory from high-risk countries. Pets are only accepted as cargo via Muscat (MCT).',
+                yasaklar: 'Many breeds considered "aggressive" are banned, including Pit Bull, Mastiff, Rottweiler, and Doberman.'
+            }
+        };
+
+        const ulkeVerisi_ar = {
+            'bae': {
+                baslik: 'الإمارات العربية المتحدة (UAE)',
+                gereklilik: 'شريحة إلكترونية إلزامية، لقاح داء الكلب، و DHPPL/FVRCP. التسجيل السنوي في البلدية (DM/AD) و "العلامة" (tag) إلزامي.',
+                ithalat: 'تصريح استيراد عبر MOCCAE (وزارة التغير المناخي والبيئة) (صالح لمدة 30 يومًا). اختبار معايرة داء الكلب من البلدان عالية الخطورة (90 يومًا قبل الوصول) وعلاج الطفيليات الداخلية/الخارجية (آخر 14 يومًا) إلزامي. يجب أن تصل الحيوانات الأليفة كشحن فقط (دبي: DXB، أبوظبي: AUH).',
+                yasaklar: 'العديد من السلالات محظورة، بما في ذلك Pit Bull, Staffordshire Terrier, Tosa Inu, Dogo Argentino, Fila Brasileiro, و Mastiffs. بعض السلالات مثل Rottweiler و Doberman مقيدة (يمكن استيرادها فقط لأغراض الشرطة/الجيش).'
+            },
+            'suudi': {
+                baslik: 'المملكة العربية السعودية',
+                gereklilik: 'شريحة إلكترونية إلزامية ولقاح داء الكلب. يوصى بالتسجيل البيطري المحلي بعد الدخول.',
+                ithalat: 'تصريح استيراد عبر MEWA (وزارة البيئة والمياه والزراعة). اختبار معايرة داء الكلب إلزامي من العديد من البلدان (بما في ذلك تركيا). تطبق قواعد مثل أن يكون الحيوان الأليف أكبر من 6 أشهر وليس أكثر من حيوانين أليفين لكل شخص.',
+                yasaklar: 'قائمة السلالات المحظورة مشابهة للإمارات (Pit Bull, Rottweiler, Mastiffs, إلخ). قد يكون من الصعب أيضًا استيراد بعض السلالات غير المصنفة ككلاب "حراسة".'
+            },
+            'katar': {
+                baslik: 'قطر',
+                gereklilik: 'شريحة إلكترونية إلزامية، داء الكلب، ولقاحات أساسية أخرى.',
+                ithalat: 'تصريح استيراد من MME (وزارة البلدية والبيئة) قسم رعاية الحيوان. اختبار معايرة داء الكلب إلزامي من البلدان عالية الخطورة (انتظار 90 يومًا). التصريح صالح لمدة 30 يومًا.',
+                yasaklar: 'توجد قائمة بالسلالات المحظورة (Pit Bull, Tosa, Dogo Argentino, إلخ). قد يكون استيراد بعض السلالات الكبيرة صعبًا.'
+            },
+            'kuveyt': {
+                baslik: 'الكويت',
+                gereklilik: 'شريحة إلكترونية وجدول تطعيم كامل (بما في ذلك داء الكلب).',
+                ithalat: 'تصريح استيراد من PAAF (الهيئة العامة لشؤون الزراعة والثروة السمكية) مطلوب. اختبار معايرة داء الكلب إلزامي من البلدان عالية الخطورة. قد تحتاج جميع المستندات إلى تصديق من القنصلية الكويتية.',
+                yasaklar: 'توجد قائمة سلالات محظورة مشابهة للإمارات، بما في ذلك Pit Bull, Doberman, Rottweiler, وأنواع Mastiff.'
+            },
+            'bahreyn': {
+                baslik: 'البحرين',
+                gereklilik: 'شريحة إلكترونية وجدول تطعيم كامل.',
+                ithalat: 'تصريح استيراد واختبار معايرة داء الكلب (من البلدان عالية الخطورة) مطلوبان. تقدم البحرين عملية أسهل (الفئة 1) للحيوانات الأليفة القادمة من بعض البلدان "منخفضة الخطورة".',
+                yasaklar: 'تتوفر قائمة بالسلالات المحظورة. Pit Bulls ومزيجها محظورة تمامًا.'
+            },
+            'umman': {
+                baslik: 'عمان',
+                gereklilik: 'شريحة إلكترونية، لقاح داء الكلب، ولقاحات أساسية أخرى.',
+                ithalat: 'تصريح استيراد من وزارة الزراعة والثروة السمكية مطلوب. اختبار معايرة داء الكلب إلزامي من البلدان عالية الخطورة. يتم قبول الحيوانات الأليفة فقط كشحن عبر مسقط (MCT).',
+                yasaklar: 'العديد من السلالات التي تعتبر "عدوانية" محظورة، بما في ذلك Pit Bull, Mastiff, Rottweiler, و Doberman.'
+            }
+        };
+
+        const ulkeVerisi_hi = {
+            'bae': {
+                baslik: 'संयुक्त अरब अमीरात (यूएई)',
+                gereklilik: 'अनिवार्य माइक्रोचिप, रेबीज वैक्सीन, और DHPPL/FVRCP। वार्षिक नगर पालिका (DM/AD) पंजीकरण और "टैग" अनिवार्य हैं।',
+                ithalat: 'एमओसीसीएई (जलवायु परिवर्तन और पर्यावरण मंत्रालय) के माध्यम से आयात परमिट (30 दिन वैध)। उच्च जोखिम वाले देशों से रेबीज टाइटर टेस्ट (आगमन से 90 दिन पहले) और आंतरिक/बाहरी परजीवी उपचार (पिछले 14 दिन) अनिवार्य हैं। पालतू जानवरों को केवल कार्गो के रूप में पहुंचना चाहिए (दुबई: डीएक्सबी, अबू धाबी: एयूएच)।',
+                yasaklar: 'पिट बुल, स्टैफोर्डशायर टेरियर, टोसा इनु, डोगो अर्जेंटीनो, फिला ब्रासीलेरो और मास्टिफ सहित कई नस्लों पर प्रतिबंध है। रॉटवीलर और डॉबरमैन जैसी कुछ नस्लें प्रतिबंधित हैं (केवल पुलिस/सैन्य उद्देश्यों के लिए आयात की जा सकती हैं)।'
+            },
+            'suudi': {
+                baslik: 'सऊदी अरब',
+                gereklilik: 'अनिवार्य माइक्रोचिप और रेबीज वैक्सीन। प्रवेश के बाद स्थानीय पशु चिकित्सक पंजीकरण की सिफारिश की जाती है।',
+                ithalat: 'MEWA (पर्यावरण, जल और कृषि मंत्रालय) के माध्यम से आयात परमिट। कई देशों (तुर्की सहित) से रेबीज टाइटर टेस्ट अनिवार्य है। पालतू जानवर के 6 महीने से अधिक पुराने होने और प्रति व्यक्ति 2 से अधिक पालतू जानवर न होने जैसे नियम लागू होते हैं।',
+                yasaklar: 'प्रतिबंधित नस्लों की सूची यूएई के समान है (पिट बुल, रॉटवीलर, मास्टिफ, आदि)। कुछ नस्लों को आयात करना भी मुश्किल हो सकता है जिन्हें "गार्ड" कुत्तों के रूप में वर्गीकृत नहीं किया गया है।'
+            },
+            'katar': {
+                baslik: 'कतर',
+                gereklilik: 'अनिवार्य माइक्रोचिप, रेबीज, और अन्य मुख्य टीके।',
+                ithalat: 'एमएमई (नगर पालिका और पर्यावरण मंत्रालय) पशु कल्याण विभाग से आयात परमिट। उच्च जोखिम वाले देशों से रेबीज टाइटर टेस्ट अनिवार्य है (90 दिन की प्रतीक्षा)। परमिट 30 दिनों के लिए वैध है।',
+                yasaklar: 'प्रतिबंधित नस्लों की एक सूची मौजूद है (पिट बुल, टोसा, डोगो अर्जेंटीनो, आदि)। कुछ बड़ी नस्लों का आयात करना मुश्किल हो सकता है।'
+            },
+            'kuveyt': {
+                baslik: 'कुवैत',
+                gereklilik: 'माइक्रोचिप और पूर्ण टीकाकरण अनुसूची (रेबीज सहित)।',
+                ithalat: 'पीएएएफ (कृषि और मछली मामलों के लिए सार्वजनिक प्राधिकरण) से आयात परमिट की आवश्यकता है। उच्च जोखिम वाले देशों से रेबीज टाइटर टेस्ट अनिवार्य है। सभी दस्तावेजों को कुवैती वाणिज्य दूतावास द्वारा सत्यापित करने की आवश्यकता हो सकती है।',
+                yasaklar: 'यूएई के समान एक प्रतिबंधित नस्लों की सूची मौजूद है, जिसमें पिट बुल, डॉबरमैन, रॉटवीलर और मास्टिफ प्रकार शामिल हैं।'
+            },
+            'bahreyn': {
+                baslik: 'बहरीन',
+                gereklilik: 'माइक्रोचिप और पूर्ण टीकाकरण अनुसूची।',
+                ithalat: 'आयात परमिट और रेबीज टाइटर टेस्ट (उच्च जोखिम वाले देशों से) की आवश्यकता है। बहरीन कुछ "कम जोखिम" वाले देशों से आने वाले पालतू जानवरों के लिए एक आसान प्रक्रिया (श्रेणी 1) प्रदान करता है।',
+                yasaklar: 'प्रतिबंधित नस्लों की एक सूची उपलब्ध है। पिट बुल्स और उनके मिश्रणों पर सख्त प्रतिबंध है।'
+            },
+            'umman': {
+                baslik: 'ओमान',
+                gereklilik: 'माइक्रोचिप, रेबीज वैक्सीन, और अन्य मुख्य टीके।',
+                ithalat: 'कृषि और मत्स्य पालन मंत्रालय से आयात परमिट की आवश्यकता है। उच्च जोखिम वाले देशों से रेबीज टाइटर टेस्ट अनिवार्य है। पालतू जानवरों को केवल मस्कट (एमसीटी) के माध्यम से कार्गो के रूप में स्वीकार किया जाता है।',
+                yasaklar: 'पिट बुल, मास्टिफ, रॉटवीलर और डॉबरमैन सहित "आक्रामक" मानी जाने वाली कई नस्लों पर प्रतिबंध है।'
+            }
+        };
+
+        const allCountryData = {
+            'en': ulkeVerisi_en,
+            'ar': ulkeVerisi_ar,
+            'hi': ulkeVerisi_hi
+        };
+        
+        // --- GLOBAL VARIABLES ---
+        let currentLang = 'en';
+        let sureChartInstance, maliyetChartInstance, hataChartInstance;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Initialize mobile menu
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+            }
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(event) {
+                const menu = document.getElementById('mobile-menu');
+                const btn = document.getElementById('mobile-menu-btn');
+                if (menu && btn && !menu.contains(event.target) && !btn.contains(event.target) && !menu.classList.contains('hidden')) {
+                    closeMobileMenu();
+                }
+            });
+            
+            const langSelector = document.getElementById('lang-selector');
+            const ulkeSecim = document.getElementById('ulke-secim');
+            
+            // --- LANGUAGE SWITCHER LOGIC ---
+            
+            langSelector.addEventListener('click', (e) => {
+                if (e.target.classList.contains('lang-switcher')) {
+                    const lang = e.target.getAttribute('data-lang');
+                    if (lang !== currentLang) {
+                        switchLanguage(lang);
+                    }
+                }
+            });
+
+            function switchLanguage(lang) {
+                currentLang = lang;
+                document.documentElement.lang = lang;
+                document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+
+                // Update active button
+                document.querySelectorAll('.lang-switcher').forEach(btn => {
+                    if (btn.getAttribute('data-lang') === lang) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+
+                // Translate all data-key elements
+                document.querySelectorAll('[data-key]').forEach(el => {
+                    const key = el.getAttribute('data-key');
+                    const translation = translations[lang][key];
+                    if (translation) {
+                        if (el.tagName === 'P' || el.classList.contains('process-card-content') || el.classList.contains('faq-cevap')) {
+                            el.innerHTML = translation;
+                        } else if (el.tagName === 'OPTION') {
+                            el.textContent = translation;
+                        } else {
+                            el.textContent = translation;
+                        }
+                    }
+                });
+
+                // Refresh country guide
+                const currentCountry = ulkeSecim.value;
+                guncelleUlkeDetay(currentCountry);
+                
+                // Refresh charts
+                updateChartsLanguage(lang);
+            }
+
+            // --- COUNTRY GUIDE LOGIC ---
+            
+            const ulkeDetayKonteyner = document.getElementById('ulke-detay-konteyner');
+
+            function guncelleUlkeDetay(ulkeKodu) {
+                const veri = allCountryData[currentLang][ulkeKodu];
+                if (!veri) return;
+
+                ulkeDetayKonteyner.innerHTML = `
+                    <h3 class="text-2xl font-bold text-teal-800 mb-4">${veri.baslik}</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-700" data-key="guide_detail_h4_1">Basic Requirements & Local License</h4>
+                            <p class="text-gray-600">${veri.gereklilik}</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-700" data-key="guide_detail_h4_2">Import Process & Documents</h4>
+                            <p class="text-gray-600">${veri.ithalat}</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-700" data-key="guide_detail_h4_3">Banned / Restricted Breeds</h4>
+                            <p class="text-gray-600">${veri.yasaklar}</p>
+                        </div>
+                    </div>
+                `;
+                // Translate h4 tags
+                ulkeDetayKonteyner.querySelectorAll('[data-key^="guide_detail_h4"]').forEach(el => {
+                    const key = el.getAttribute('data-key');
+                    const translation = translations[currentLang][key];
+                    if (translation) {
+                        el.textContent = translation;
+                    }
+                });
+            }
+            
+
+
+            ulkeSecim.addEventListener('change', (e) => {
+                guncelleUlkeDetay(e.target.value);
+            });
+
+            
+            // --- ACCORDION TOGGLE LOGIC ---
+            
+            function setupAccordion(selector) {
+                document.querySelectorAll(selector).forEach(item => {
+                    const header = item.firstElementChild;
+                    header.addEventListener('click', () => {
+                        const content = header.nextElementSibling;
+                        const icon = header.querySelector('.toggle-icon');
+                        const isHidden = content.classList.contains('hidden');
+                        const isExpanded = header.getAttribute('aria-expanded') === 'true';
+                        
+                        content.classList.toggle('hidden');
+                        header.setAttribute('aria-expanded', !isExpanded);
+                        
+                        if (isHidden) {
+                            content.style.maxHeight = content.scrollHeight + 'px';
+                            icon.textContent = '−';
+                        } else {
+                            content.style.maxHeight = null;
+                            icon.textContent = '+';
+                        }
+                    });
+                });
+            }
+            
+            setupAccordion('.process-card');
+            setupAccordion('.faq-item');
+
+
+            // --- CHART CREATION & UPDATE LOGIC ---
+            
+            function createCharts() {
+                const lang = 'en'; // Initial create with English
+                
+                // 1. Süre Chart (Bar)
+                const sureCtx = document.getElementById('sureChart').getContext('2d');
+                sureChartInstance = new Chart(sureCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['UAE', 'Saudi Arabia', 'Qatar', 'Kuwait', 'Bahrain'],
+                        datasets: [{
+                            label: translations[lang]['chart1_label'],
+                            data: [16, 18, 17, 20, 16],
+                            backgroundColor: 'rgba(13, 148, 136, 0.7)',
+                            borderColor: 'rgba(13, 148, 136, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const suffix = translations[currentLang]['chart1_tooltip_suffix']
+                                            .replace('{months}', Math.round(context.parsed.y / 4));
+                                        return ` ${translations[currentLang]['chart1_label']}: ${context.parsed.y} ${suffix}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { display: false }
+                            }
+                        }
+                    }
+                });
+
+                // 2. Maliyet Chart (Donut)
+                const maliyetCtx = document.getElementById('maliyetChart').getContext('2d');
+                maliyetChartInstance = new Chart(maliyetCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: translations[lang]['chart2_labels'],
+                        datasets: [{
+                            data: [40, 25, 20, 15],
+                            backgroundColor: [
+                                'rgba(13, 148, 136, 0.8)',
+                                'rgba(5, 150, 105, 0.7)',
+                                'rgba(15, 118, 110, 0.6)',
+                                'rgba(17, 94, 89, 0.5)'
+                            ],
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { 
+                                position: 'bottom',
+                                labels: {
+                                    font: {
+                                        family: "'Inter', 'Noto Sans', 'Noto Sans Arabic', sans-serif"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // 3. Hata Chart (Pie)
+                const hataCtx = document.getElementById('hataChart').getContext('2d');
+                hataChartInstance = new Chart(hataCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: translations[lang]['chart3_labels'],
+                        datasets: [{
+                            data: [30, 25, 20, 15, 10],
+                            backgroundColor: [
+                                'rgba(217, 119, 6, 0.8)',
+                                'rgba(245, 158, 11, 0.7)',
+                                'rgba(202, 138, 4, 0.6)',
+                                'rgba(146, 64, 14, 0.5)',
+                                'rgba(120, 53, 15, 0.4)'
+                            ],
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { 
+                                position: 'bottom',
+                                display: true,
+                                labels: {
+                                    font: {
+                                        family: "'Inter', 'Noto Sans', 'Noto Sans Arabic', sans-serif"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            function updateChartsLanguage(lang) {
+                if (!sureChartInstance || !maliyetChartInstance || !hataChartInstance) return;
+                
+                // Update Chart 1
+                sureChartInstance.data.datasets[0].label = translations[lang]['chart1_label'];
+                sureChartInstance.update();
+
+                // Update Chart 2
+                maliyetChartInstance.data.labels = translations[lang]['chart2_labels'];
+                maliyetChartInstance.update();
+
+                // Update Chart 3
+                hataChartInstance.data.labels = translations[lang]['chart3_labels'];
+                hataChartInstance.update();
+            }
+            
+            // --- INITIALIZE ---
+            
+            createCharts();
+            switchLanguage('en'); // Set default language on load
+            
+            // Show support popup after 5 seconds
+            setTimeout(() => {
+                showSupportPopup();
+            }, 5000);
+
+        });
+
+        // --- CHECKLIST FUNCTIONS ---
+        
+        function resetChecklist() {
+            for (let i = 1; i <= 10; i++) {
+                document.getElementById('check' + i).checked = false;
+            }
+        }
+
+        // --- TIMELINE CALCULATOR ---
+        
+        function calculateTimeline() {
+            const startDateInput = document.getElementById('start-date');
+            const petType = document.getElementById('pet-type').value;
+            const startDate = new Date(startDateInput.value);
+            
+            if (!startDateInput.value) {
+                alert('Please select a start date.');
+                return;
+            }
+            
+            const results = document.getElementById('timeline-results');
+            results.classList.remove('hidden');
+            
+            // Microchip - same day
+            const microchipDate = new Date(startDate);
+            document.getElementById('microchip-date').textContent = formatDate(microchipDate);
+            
+            // Rabies vaccination - same day or next day
+            const rabiesDate = new Date(startDate);
+            document.getElementById('rabies-date').textContent = formatDate(rabiesDate);
+            
+            if (petType === 'high-risk') {
+                // Titer test blood sample - 30 days after rabies
+                const titerDate = new Date(rabiesDate);
+                titerDate.setDate(titerDate.getDate() + 30);
+                document.getElementById('titer-date').textContent = formatDate(titerDate);
+                
+                // Titer results - 2-4 weeks after blood sample
+                const titerResultDate = new Date(titerDate);
+                titerResultDate.setDate(titerResultDate.getDate() + 21); // 3 weeks average
+                document.getElementById('titer-result-date').textContent = formatDate(titerResultDate);
+                
+                // Earliest travel - 90 days after titer test (3 months before arrival requirement)
+                const travelDate = new Date(titerResultDate);
+                travelDate.setDate(travelDate.getDate() + 90);
+                
+                // Permit application - 30 days before travel
+                const permitDate = new Date(travelDate);
+                permitDate.setDate(permitDate.getDate() - 30);
+                document.getElementById('permit-date').textContent = formatDate(permitDate);
+                
+                // Health certificate - 10 days before travel
+                const healthDate = new Date(travelDate);
+                healthDate.setDate(healthDate.getDate() - 10);
+                document.getElementById('health-date').textContent = formatDate(healthDate) + ' to ' + formatDate(travelDate);
+                
+                document.getElementById('travel-date').textContent = formatDate(travelDate);
+                
+                document.getElementById('titer-section').classList.remove('hidden');
+                document.getElementById('titer-result-section').classList.remove('hidden');
+            } else {
+                // Low-risk: no titer test needed
+                document.getElementById('titer-section').classList.add('hidden');
+                document.getElementById('titer-result-section').classList.add('hidden');
+                
+                // Earliest travel - 21 days after rabies (minimum wait)
+                const travelDate = new Date(rabiesDate);
+                travelDate.setDate(travelDate.getDate() + 21);
+                
+                // Permit application - 30 days before travel
+                const permitDate = new Date(travelDate);
+                permitDate.setDate(permitDate.getDate() - 30);
+                document.getElementById('permit-date').textContent = formatDate(permitDate);
+                
+                // Health certificate - 10 days before travel
+                const healthDate = new Date(travelDate);
+                healthDate.setDate(healthDate.getDate() - 10);
+                document.getElementById('health-date').textContent = formatDate(healthDate) + ' to ' + formatDate(travelDate);
+                
+                document.getElementById('travel-date').textContent = formatDate(travelDate);
+            }
+        }
+        
+        function formatDate(date) {
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        // --- MOBILE MENU ---
+        
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const btn = document.getElementById('mobile-menu-btn');
+            if (menu) {
+                menu.classList.toggle('hidden');
+                if (btn) {
+                    const svg = btn.querySelector('svg');
+                    if (svg && !menu.classList.contains('hidden')) {
+                        // Change to X icon
+                        svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>';
+                    } else if (svg) {
+                        // Change back to hamburger
+                        svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
+                    }
+                }
+            }
+        }
+        
+        function closeMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const btn = document.getElementById('mobile-menu-btn');
+            if (menu) {
+                menu.classList.add('hidden');
+                if (btn) {
+                    const svg = btn.querySelector('svg');
+                    if (svg) {
+                        svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
+                    }
+                }
+            }
+        }
+        
+
+        // --- SUPPORT POPUP ---
+        
+        function showSupportPopup() {
+            const popup = document.getElementById('support-popup');
+            if (popup) {
+                popup.classList.remove('popup-hidden');
+            }
+        }
+        
+        function closeSupportPopup() {
+            const popup = document.getElementById('support-popup');
+            if (popup) {
+                popup.classList.add('popup-hidden');
+            }
+        }
+        
+
+        // --- COST CALCULATOR ---
+        
+        function calculateCost() {
+            const country = document.getElementById('cost-country').value;
+            const petType = document.getElementById('cost-pet-type').value;
+            const titerRequired = document.getElementById('cost-titer').value === 'yes';
+            const useRelocator = document.getElementById('cost-relocator').value === 'yes';
+            
+            // Base costs (USD estimates - realistic ranges)
+            let vetCost = 200; // Microchip + basic vaccines
+            if (titerRequired) {
+                vetCost += 300; // Titer test
+            }
+            vetCost += petType === 'dog' ? 150 : 100; // Additional vaccines
+            
+            let permitCost = 50; // Base permit fee
+            if (country === 'bae') permitCost = 100;
+            else if (country === 'suudi') permitCost = 80;
+            else if (country === 'katar') permitCost = 70;
+            else if (country === 'kuveyt') permitCost = 60;
+            else if (country === 'bahreyn') permitCost = 50;
+            else if (country === 'umman') permitCost = 55;
+            
+            let cargoCost = 300; // Base cargo handling
+            if (useRelocator) {
+                cargoCost += 500; // Relocator service fee
+            }
+            
+            let otherCost = 150; // Crate, attestation, etc.
+            if (country === 'kuveyt') {
+                otherCost += 100; // Additional attestation requirements
+            }
+            
+            const total = vetCost + permitCost + cargoCost + otherCost;
+            
+            const results = document.getElementById('cost-results');
+            results.classList.remove('hidden');
+            
+            document.getElementById('cost-vet').textContent = '$' + vetCost.toLocaleString() + ' - $' + (vetCost + 100).toLocaleString();
+            document.getElementById('cost-permit').textContent = '$' + permitCost.toLocaleString() + ' - $' + (permitCost + 50).toLocaleString();
+            document.getElementById('cost-cargo').textContent = '$' + cargoCost.toLocaleString() + ' - $' + (cargoCost + 200).toLocaleString();
+            document.getElementById('cost-other').textContent = '$' + otherCost.toLocaleString() + ' - $' + (otherCost + 100).toLocaleString();
+            document.getElementById('cost-total').textContent = '$' + total.toLocaleString() + ' - $' + (total + 450).toLocaleString();
+        }
+    </script>
+</body>
+</html>
