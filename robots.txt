@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://your-domain.vercel.app/sitemap.xml
+# Sitemap will be dynamically generated
+# Add your actual domain to sitemap.xml after deployment
 
