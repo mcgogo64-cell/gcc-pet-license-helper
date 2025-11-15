@@ -53,6 +53,15 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4429391480566285"
      crossorigin="anonymous"></script>
     
+    <!-- PayPal SDK -->
+    <!-- IMPORTANT: 
+         - For TESTING: Use Sandbox Client ID (switch to Sandbox mode in PayPal Dashboard)
+         - For PRODUCTION: Switch to Live mode and use Live Client ID
+         - Client ID is SAFE to be visible in code (it's public)
+         - NEVER use Secret in frontend code!
+    -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AYL0iQeBW9MDXaC8Ojry-JWQTiyITJWtgV43lc0YryLd5en3QmW8GjpWzIffyKJXOWrl-mO74SMqNr1D&currency=EUR"></script>
+    
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
     {
@@ -199,40 +208,46 @@
                 font-size: 0.75rem;
             }
         }
-        .popup-overlay {
+        /* PDF Purchase Pop-up Styles */
+        .pdf-popup-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.7);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 9999;
             backdrop-filter: blur(4px);
         }
-        .popup-content {
+        .pdf-popup-hidden {
+            display: none;
+        }
+        .pdf-popup-content {
             background: white;
             padding: 2rem;
             border-radius: 1rem;
-            max-width: 500px;
+            max-width: 600px;
             width: 90%;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
             position: relative;
-            animation: popupSlideIn 0.3s ease-out;
+            animation: pdfPopupSlideIn 0.3s ease-out;
         }
-        @keyframes popupSlideIn {
+        @keyframes pdfPopupSlideIn {
             from {
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: translateY(-20px) scale(0.95);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
-        .popup-close {
+        .pdf-popup-close {
             position: absolute;
             top: 1rem;
             right: 1rem;
@@ -242,51 +257,127 @@
             cursor: pointer;
             color: #666;
             transition: color 0.3s;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
         }
-        .popup-close:hover {
+        .pdf-popup-close:hover {
             color: #000;
+            background-color: #f3f4f6;
         }
-        .popup-hidden {
+        .pdf-popup-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #0D9488;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .pdf-popup-description {
+            color: #374151;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        .pdf-popup-features {
+            background-color: #F0F9FF;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .pdf-popup-features ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .pdf-popup-features li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        .pdf-popup-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #0D9488;
+            font-weight: bold;
+        }
+        .pdf-popup-price {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0D9488;
+            margin-bottom: 1.5rem;
+        }
+        .pdf-paypal-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .pdf-download-section {
             display: none;
+            text-align: center;
+            padding: 1.5rem;
+            background-color: #ECFDF5;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
         }
-        .paypal-button {
+        .pdf-download-section.show {
+            display: block;
+        }
+        .pdf-download-btn {
             display: inline-block;
-            background-color: #0070ba;
+            background-color: #0D9488;
             color: white;
-            padding: 0.75rem 1.5rem;
+            padding: 0.75rem 2rem;
             border-radius: 0.5rem;
             text-decoration: none;
             font-weight: 600;
-            margin-top: 1rem;
             transition: background-color 0.3s;
+            margin-top: 1rem;
         }
-        .paypal-button:hover {
-            background-color: #005ea6;
+        .pdf-download-btn:hover {
+            background-color: #0F766E;
+        }
+        @media (max-width: 640px) {
+            .pdf-popup-content {
+                padding: 1.5rem;
+            }
+            .pdf-popup-title {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body class="bg-amber-50 text-gray-800">
 
-    <!-- Support Pop-up -->
-    <div id="support-popup" class="popup-overlay popup-hidden">
-        <div class="popup-content">
-            <button class="popup-close" onclick="closeSupportPopup()" aria-label="Close">×</button>
-            <h3 class="text-2xl font-bold text-teal-700 mb-4" data-key="popup_title">Support This Project</h3>
-            <p class="text-gray-700 mb-4" data-key="popup_message">
-                If you found this resource helpful, please consider supporting the project. Your contribution helps maintain and improve this free service.
+    <!-- PDF Purchase Pop-up -->
+    <div id="pdf-popup" class="pdf-popup-overlay pdf-popup-hidden">
+        <div class="pdf-popup-content">
+            <button class="pdf-popup-close" onclick="closePdfPopup()" aria-label="Close">×</button>
+            <h2 class="pdf-popup-title" data-key="pdf_popup_title">Complete GCC Pet License Guide</h2>
+            <p class="pdf-popup-description" data-key="pdf_popup_description">
+                Get the complete bilingual guide with all solutions and necessary information for GCC Pet License. This comprehensive PDF includes step-by-step instructions, country-specific requirements, and everything you need to know.
             </p>
-            <p class="text-sm text-gray-600 mb-4">
-                <span data-key="popup_email">PayPal:</span> <strong>mc.gogo64@gmx.de</strong>
-            </p>
-            <a href="https://www.paypal.com/myaccount/transfer/send/requestFlow?tileName=request_money&recipient=mc.gogo64@gmx.de" target="_blank" rel="noopener noreferrer" class="paypal-button" data-key="popup_button">
-                Donate via PayPal
-            </a>
-            <p class="text-xs text-gray-500 mt-2">
-                <span data-key="popup_note">Or send directly to:</span> <strong>mc.gogo64@gmx.de</strong>
-            </p>
-            <button onclick="closeSupportPopup()" class="block mt-4 text-sm text-gray-500 hover:text-gray-700" data-key="popup_close">
-                Maybe later
-            </button>
+            <div class="pdf-popup-features">
+                <ul>
+                    <li data-key="pdf_feature1">Complete bilingual guide (English & Arabic)</li>
+                    <li data-key="pdf_feature2">Step-by-step instructions</li>
+                    <li data-key="pdf_feature3">Country-specific requirements</li>
+                    <li data-key="pdf_feature4">All necessary documents checklist</li>
+                    <li data-key="pdf_feature5">Timeline and cost estimates</li>
+                </ul>
+            </div>
+            <div class="pdf-popup-price">
+                <span data-key="pdf_price">Price: 3.00 €</span>
+            </div>
+            <div class="pdf-paypal-container" id="paypal-button-container"></div>
+            <div class="pdf-download-section" id="pdf-download-section">
+                <p data-key="pdf_thank_you" style="color: #059669; font-weight: 600; margin-bottom: 0.5rem;">Thank you for your purchase!</p>
+                <p data-key="pdf_download_text" style="color: #374151; margin-bottom: 1rem;">Click below to download your guide:</p>
+                <a href="Bilingual GCC Pet Import Guide.pdf" download="GCC_Pet_Import_Guide.pdf" class="pdf-download-btn" data-key="pdf_download_btn">Download PDF Now</a>
+            </div>
         </div>
     </div>
 
@@ -1022,12 +1113,19 @@
                 'emergency_info': 'Contact your airline\'s cargo department immediately. Have your pet\'s microchip number, flight details, and all documents ready. For veterinary emergencies at destination, contact local emergency veterinary clinics or the airport veterinary services.',
                 'emergency_airport': 'Airport Veterinary Services:',
                 'emergency_airport_info': 'Most GCC airports have 24/7 veterinary services. Contact information is usually available at the cargo terminal or through your airline.',
-                'popup_title': 'Support This Project',
-                'popup_message': 'If you found this resource helpful, please consider supporting the project. Your contribution helps maintain and improve this free service.',
-                'popup_email': 'PayPal:',
-                'popup_button': 'Donate via PayPal',
-                'popup_close': 'Maybe later',
-                'popup_note': 'Or send directly to:',
+                'pdf_popup_title': 'Complete GCC Pet License Guide',
+                'pdf_popup_description': 'Get the complete bilingual guide with all solutions and necessary information for GCC Pet License. This comprehensive PDF includes step-by-step instructions, country-specific requirements, and everything you need to know.',
+                'pdf_feature1': 'Complete bilingual guide (English & Arabic)',
+                'pdf_feature2': 'Step-by-step instructions',
+                'pdf_feature3': 'Country-specific requirements',
+                'pdf_feature4': 'All necessary documents checklist',
+                'pdf_feature5': 'Timeline and cost estimates',
+                'pdf_price': 'Price: 3.00 €',
+                'pdf_thank_you': 'Thank you for your purchase!',
+                'pdf_download_text': 'Click below to download your guide:',
+                'pdf_download_btn': 'Download PDF Now',
+                'pdf_payment_success': 'Payment successful! You can now download the guide.',
+                'pdf_payment_error': 'An error occurred during payment. Please try again.',
                 'footer_copy': '© 2025 GCC Pet License Assistant. All rights reserved.',
                 'footer_disclaimer': 'Disclaimer: This website is for informational purposes only and does not constitute legal advice. Please consult the official government agencies of the respective countries for the most current and accurate information.',
                 'chart1_label': 'Est. Prep Time (Weeks)',
@@ -1158,12 +1256,19 @@
                 'emergency_info': 'اتصل بقسم الشحن في شركة الطيران على الفور. احتفظ برقم الشريحة الإلكترونية لحيوانك الأليف وتفاصيل الرحلة وجميع المستندات جاهزة. لحالات الطوارئ البيطرية في الوجهة، اتصل بالعيادات البيطرية الطارئة المحلية أو خدمات بيطرية المطار.',
                 'emergency_airport': 'خدمات بيطرية المطار:',
                 'emergency_airport_info': 'معظم مطارات مجلس التعاون الخليجي لديها خدمات بيطرية على مدار الساعة. عادة ما تكون معلومات الاتصال متاحة في محطة الشحن أو من خلال شركة الطيران.',
-                'popup_title': 'ادعم هذا المشروع',
-                'popup_message': 'إذا وجدت هذا المورد مفيدًا، يرجى التفكير في دعم المشروع. مساهمتك تساعد في الحفاظ على هذه الخدمة المجانية وتحسينها.',
-                'popup_email': 'PayPal:',
-                'popup_button': 'تبرع عبر PayPal',
-                'popup_close': 'ربما لاحقًا',
-                'popup_note': 'أو أرسل مباشرة إلى:',
+                'pdf_popup_title': 'دليل ترخيص الحيوانات الأليفة لدول مجلس التعاون الخليجي الكامل',
+                'pdf_popup_description': 'احصل على الدليل ثنائي اللغة الكامل مع جميع الحلول والمعلومات اللازمة لترخيص الحيوانات الأليفة في دول مجلس التعاون الخليجي. يتضمن هذا الملف PDF الشامل تعليمات خطوة بخطوة ومتطلبات خاصة بكل دولة وكل ما تحتاج لمعرفته.',
+                'pdf_feature1': 'دليل ثنائي اللغة كامل (الإنجليزية والعربية)',
+                'pdf_feature2': 'تعليمات خطوة بخطوة',
+                'pdf_feature3': 'متطلبات خاصة بكل دولة',
+                'pdf_feature4': 'قائمة التحقق من جميع المستندات اللازمة',
+                'pdf_feature5': 'الجدول الزمني وتقديرات التكلفة',
+                'pdf_price': 'السعر: 3.00 €',
+                'pdf_thank_you': 'شكرًا لك على الشراء!',
+                'pdf_download_text': 'انقر أدناه لتنزيل دليلك:',
+                'pdf_download_btn': 'تنزيل PDF الآن',
+                'pdf_payment_success': 'تم الدفع بنجاح! يمكنك الآن تنزيل الدليل.',
+                'pdf_payment_error': 'حدث خطأ أثناء الدفع. يرجى المحاولة مرة أخرى.',
                 'footer_copy': '© 2025 مساعد ترخيص الحيوانات الأليفة لدول مجلس التعاون الخليجي. جميع الحقوق محفوظة.',
                 'footer_disclaimer': 'إخلاء المسؤولية: هذا الموقع للأغراض الإعلامية فقط ولا يشكل نصيحة قانونية. يرجى استشارة الجهات الحكومية الرسمية في البلدان المعنية للحصول على أحدث وأدق المعلومات.',
                 'chart1_label': 'وقت التحضير المقدر (أسابيع)',
@@ -1294,12 +1399,19 @@
                 'emergency_info': 'तुरंत अपनी एयरलाइन के कार्गो विभाग से संपर्क करें। अपने पालतू जानवर की माइक्रोचिप संख्या, उड़ान विवरण और सभी दस्तावेज़ तैयार रखें। गंतव्य पर पशु चिकित्सा आपात स्थितियों के लिए, स्थानीय आपातकालीन पशु चिकित्सा क्लीनिक या हवाई अड्डे की पशु चिकित्सा सेवाओं से संपर्क करें।',
                 'emergency_airport': 'हवाई अड्डा पशु चिकित्सा सेवाएं:',
                 'emergency_airport_info': 'अधिकांश जीसीसी हवाई अड्डों में 24/7 पशु चिकित्सा सेवाएं हैं। संपर्क जानकारी आमतौर पर कार्गो टर्मिनल पर या अपनी एयरलाइन के माध्यम से उपलब्ध होती है।',
-                'popup_title': 'इस परियोजना का समर्थन करें',
-                'popup_message': 'यदि आपको यह संसाधन उपयोगी लगा, तो कृपया परियोजना का समर्थन करने पर विचार करें। आपका योगदान इस मुफ्त सेवा को बनाए रखने और सुधारने में मदद करता है।',
-                'popup_email': 'PayPal:',
-                'popup_button': 'PayPal के माध्यम से दान करें',
-                'popup_close': 'शायद बाद में',
-                'popup_note': 'या सीधे भेजें:',
+                'pdf_popup_title': 'संपूर्ण जीसीसी पालतू लाइसेंस गाइड',
+                'pdf_popup_description': 'जीसीसी पालतू लाइसेंस के लिए सभी समाधानों और आवश्यक जानकारी के साथ संपूर्ण द्विभाषी गाइड प्राप्त करें। इस व्यापक PDF में चरण-दर-चरण निर्देश, देश-विशिष्ट आवश्यकताएं और आपको जो कुछ जानने की आवश्यकता है, शामिल हैं।',
+                'pdf_feature1': 'संपूर्ण द्विभाषी गाइड (अंग्रेजी और अरबी)',
+                'pdf_feature2': 'चरण-दर-चरण निर्देश',
+                'pdf_feature3': 'देश-विशिष्ट आवश्यकताएं',
+                'pdf_feature4': 'सभी आवश्यक दस्तावेज चेकलिस्ट',
+                'pdf_feature5': 'समयरेखा और लागत अनुमान',
+                'pdf_price': 'मूल्य: 3.00 €',
+                'pdf_thank_you': 'आपकी खरीदारी के लिए धन्यवाद!',
+                'pdf_download_text': 'अपना गाइड डाउनलोड करने के लिए नीचे क्लिक करें:',
+                'pdf_download_btn': 'PDF अभी डाउनलोड करें',
+                'pdf_payment_success': 'भुगतान सफल! अब आप गाइड डाउनलोड कर सकते हैं।',
+                'pdf_payment_error': 'भुगतान के दौरान एक त्रुटि हुई। कृपया पुनः प्रयास करें।',
                 'footer_copy': '© 2025 जीसीसी पालतू लाइसेंस सहायक। सर्वाधिकार सुरक्षित।',
                 'footer_disclaimer': 'अस्वीकरण: यह वेबसाइट केवल सूचना के उद्देश्यों के लिए है और कानूनी सलाह नहीं देती है। नवीनतम और सटीक जानकारी के लिए कृपया संबंधित देशों की आधिकारिक सरकारी एजेंसियों से परामर्श करें।',
                 'chart1_label': 'अनुमानित तैयारी समय (सप्ताह)',
@@ -1719,12 +1831,125 @@
             createCharts();
             switchLanguage('en'); // Set default language on load
             
-            // Show support popup after 5 seconds
-            setTimeout(() => {
-                showSupportPopup();
-            }, 5000);
+            // Initialize PDF pop-up and PayPal
+            initPdfPopup();
 
         });
+
+        // --- PDF POPUP & PAYPAL INTEGRATION ---
+        
+        function initPdfPopup() {
+            // Check if user has already purchased
+            const hasPurchased = localStorage.getItem('gcc_pet_guide_purchased');
+            const popupClosed = sessionStorage.getItem('pdf_popup_closed');
+            
+            if (hasPurchased === 'true') {
+                // User has purchased - don't show pop-up, they can download directly
+                // Download link will be available in the pop-up if they open it manually
+                return;
+            } else if (popupClosed === 'true') {
+                // User closed pop-up in this session - don't show again
+                return;
+            } else {
+                // Show pop-up after a short delay
+                setTimeout(() => {
+                    showPdfPopup();
+                    initPayPalButton();
+                }, 1500);
+            }
+        }
+        
+        function showPdfPopup() {
+            const popup = document.getElementById('pdf-popup');
+            if (popup) {
+                popup.classList.remove('pdf-popup-hidden');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            }
+        }
+        
+        function closePdfPopup() {
+            const popup = document.getElementById('pdf-popup');
+            if (popup) {
+                popup.classList.add('pdf-popup-hidden');
+                document.body.style.overflow = ''; // Restore scrolling
+                // Remember that user closed the pop-up (for this session)
+                sessionStorage.setItem('pdf_popup_closed', 'true');
+            }
+        }
+        
+        function initPayPalButton() {
+            // Check if PayPal SDK is loaded
+            if (typeof paypal === 'undefined') {
+                console.error('PayPal SDK not loaded. Please add your PayPal Client ID.');
+                document.getElementById('paypal-button-container').innerHTML = 
+                    '<p style="color: #dc2626; text-align: center;">PayPal button cannot be loaded. Please check your PayPal Client ID.</p>';
+                return;
+            }
+            
+            paypal.Buttons({
+                style: {
+                    layout: 'vertical',
+                    color: 'blue',
+                    shape: 'rect',
+                    label: 'paypal'
+                },
+                createOrder: function(data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: '3.00',
+                                currency_code: 'EUR'
+                            },
+                            description: 'Complete GCC Pet License Guide PDF'
+                        }]
+                    });
+                },
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        // Payment successful
+                        console.log('Payment successful:', details);
+                        
+                        // Save purchase status to localStorage
+                        localStorage.setItem('gcc_pet_guide_purchased', 'true');
+                        localStorage.setItem('gcc_pet_guide_purchase_date', new Date().toISOString());
+                        localStorage.setItem('gcc_pet_guide_transaction_id', details.id);
+                        
+                        // Show download section in pop-up
+                        showDownloadSection();
+                        
+                        // Update language if needed
+                        switchLanguage(currentLang);
+                    });
+                },
+                onError: function(err) {
+                    console.error('PayPal error:', err);
+                    alert(getTranslation('pdf_payment_error') || 'An error occurred during payment. Please try again.');
+                },
+                onCancel: function(data) {
+                    console.log('Payment cancelled');
+                }
+            }).render('#paypal-button-container');
+        }
+        
+        function showDownloadSection() {
+            const downloadSection = document.getElementById('pdf-download-section');
+            const paypalContainer = document.getElementById('paypal-button-container');
+            
+            if (downloadSection) {
+                downloadSection.classList.add('show');
+            }
+            if (paypalContainer) {
+                paypalContainer.style.display = 'none';
+            }
+        }
+        
+        function getTranslation(key) {
+            if (translations && translations[currentLang] && translations[currentLang][key]) {
+                return translations[currentLang][key];
+            }
+            return null;
+        }
+
 
         // --- CHECKLIST FUNCTIONS ---
         
@@ -1844,23 +2069,6 @@
                         svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
                     }
                 }
-            }
-        }
-        
-
-        // --- SUPPORT POPUP ---
-        
-        function showSupportPopup() {
-            const popup = document.getElementById('support-popup');
-            if (popup) {
-                popup.classList.remove('popup-hidden');
-            }
-        }
-        
-        function closeSupportPopup() {
-            const popup = document.getElementById('support-popup');
-            if (popup) {
-                popup.classList.add('popup-hidden');
             }
         }
         
