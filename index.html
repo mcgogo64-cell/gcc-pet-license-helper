@@ -60,7 +60,7 @@
          - Client ID is SAFE to be visible in code (it's public)
          - NEVER use Secret in frontend code!
     -->
-    <script src="https://www.paypal.com/sdk/js?client-id=AYL0iQeBW9MDXaC8Ojry-JWQTiyITJWtgV43lc0YryLd5en3QmW8GjpWzIffyKJXOWrl-mO74SMqNr1D&currency=EUR"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AYL0iQeBW9MDXaC8Ojry-JWQTiyITJWtgV43lc0YryLd5en3QmW8GjpWzIffyKJXOWrl-mO74SMqNr1D&currency=EUR&disable-funding=credit,card,paylater,venmo,sepa,bancontact,blik,eps,giropay,ideal,mercadopago,mybank,p24"></script>
     
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
@@ -370,7 +370,7 @@
                 </ul>
             </div>
             <div class="pdf-popup-price">
-                <span data-key="pdf_price">Price: 3.00 €</span>
+                <span data-key="pdf_price">Price: 3 €</span>
             </div>
             <div class="pdf-paypal-container" id="paypal-button-container"></div>
             <div class="pdf-download-section" id="pdf-download-section">
@@ -1120,7 +1120,7 @@
                 'pdf_feature3': 'Country-specific requirements',
                 'pdf_feature4': 'All necessary documents checklist',
                 'pdf_feature5': 'Timeline and cost estimates',
-                'pdf_price': 'Price: 3.00 €',
+                'pdf_price': 'Price: 3 €',
                 'pdf_thank_you': 'Thank you for your purchase!',
                 'pdf_download_text': 'Click below to download your guide:',
                 'pdf_download_btn': 'Download PDF Now',
@@ -1263,7 +1263,7 @@
                 'pdf_feature3': 'متطلبات خاصة بكل دولة',
                 'pdf_feature4': 'قائمة التحقق من جميع المستندات اللازمة',
                 'pdf_feature5': 'الجدول الزمني وتقديرات التكلفة',
-                'pdf_price': 'السعر: 3.00 €',
+                'pdf_price': 'السعر: 3 €',
                 'pdf_thank_you': 'شكرًا لك على الشراء!',
                 'pdf_download_text': 'انقر أدناه لتنزيل دليلك:',
                 'pdf_download_btn': 'تنزيل PDF الآن',
@@ -1406,7 +1406,7 @@
                 'pdf_feature3': 'देश-विशिष्ट आवश्यकताएं',
                 'pdf_feature4': 'सभी आवश्यक दस्तावेज चेकलिस्ट',
                 'pdf_feature5': 'समयरेखा और लागत अनुमान',
-                'pdf_price': 'मूल्य: 3.00 €',
+                'pdf_price': 'मूल्य: 3 €',
                 'pdf_thank_you': 'आपकी खरीदारी के लिए धन्यवाद!',
                 'pdf_download_text': 'अपना गाइड डाउनलोड करने के लिए नीचे क्लिक करें:',
                 'pdf_download_btn': 'PDF अभी डाउनलोड करें',
@@ -1891,13 +1891,14 @@
                     layout: 'vertical',
                     color: 'blue',
                     shape: 'rect',
-                    label: 'paypal'
+                    label: 'paypal',
+                    tagline: false
                 },
                 createOrder: function(data, actions) {
                     return actions.order.create({
                         purchase_units: [{
                             amount: {
-                                value: '3.00',
+                                value: '3',
                                 currency_code: 'EUR'
                             },
                             description: 'Complete GCC Pet License Guide PDF'
