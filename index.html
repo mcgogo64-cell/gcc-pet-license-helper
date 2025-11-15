@@ -322,6 +322,14 @@
                 transform: translateY(0) scale(1);
             }
         }
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(13, 148, 136, 0);
+            }
+        }
         .pdf-popup-close {
             position: absolute;
             top: 1rem;
@@ -449,9 +457,14 @@
             </div>
             <div class="pdf-paypal-container" id="paypal-button-container"></div>
             <div class="pdf-download-section" id="pdf-download-section">
-                <p data-key="pdf_thank_you" style="color: #059669; font-weight: 600; margin-bottom: 0.5rem;">Thank you for your purchase!</p>
-                <p data-key="pdf_download_text" style="color: #374151; margin-bottom: 1rem;">Click below to download your guide:</p>
-                <a href="Bilingual GCC Pet Import Guide.pdf" download="GCC_Pet_Import_Guide.pdf" class="pdf-download-btn" data-key="pdf_download_btn">Download PDF Now</a>
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <span style="font-size: 3rem; display: block; margin-bottom: 0.5rem;">✓</span>
+                </div>
+                <p data-key="pdf_thank_you" style="color: #059669; font-weight: 600; margin-bottom: 0.5rem; font-size: 1.25rem;">Thank you for your purchase!</p>
+                <p data-key="pdf_payment_confirmed" style="color: #374151; margin-bottom: 0.5rem; font-size: 0.9rem;">Your payment has been confirmed. You can now download your guide.</p>
+                <p data-key="pdf_download_text" style="color: #374151; margin-bottom: 1rem; font-weight: 500;">Click below to download your guide:</p>
+                <a href="Bilingual GCC Pet Import Guide.pdf" download="GCC_Pet_Import_Guide.pdf" class="pdf-download-btn" data-key="pdf_download_btn" onclick="trackDownload()">Download PDF Now</a>
+                <p data-key="pdf_download_note" style="color: #6B7280; font-size: 0.75rem; margin-top: 1rem;">You can download this guide anytime from this page. Your purchase is saved.</p>
             </div>
         </div>
     </div>
@@ -1197,8 +1210,10 @@
                 'pdf_feature5': 'Timeline and cost estimates',
                 'pdf_price': 'Price: 3 €',
                 'pdf_thank_you': 'Thank you for your purchase!',
+                'pdf_payment_confirmed': 'Your payment has been confirmed. You can now download your guide.',
                 'pdf_download_text': 'Click below to download your guide:',
                 'pdf_download_btn': 'Download PDF Now',
+                'pdf_download_note': 'You can download this guide anytime from this page. Your purchase is saved.',
                 'pdf_payment_success': 'Payment successful! You can now download the guide.',
                 'pdf_payment_error': 'An error occurred during payment. Please try again.',
                 'footer_copy': '© 2025 GCC Pet License Assistant. All rights reserved.',
@@ -1340,8 +1355,10 @@
                 'pdf_feature5': 'الجدول الزمني وتقديرات التكلفة',
                 'pdf_price': 'السعر: 3 €',
                 'pdf_thank_you': 'شكرًا لك على الشراء!',
+                'pdf_payment_confirmed': 'تم تأكيد دفعتك. يمكنك الآن تنزيل دليلك.',
                 'pdf_download_text': 'انقر أدناه لتنزيل دليلك:',
                 'pdf_download_btn': 'تنزيل PDF الآن',
+                'pdf_download_note': 'يمكنك تنزيل هذا الدليل في أي وقت من هذه الصفحة. تم حفظ مشترياتك.',
                 'pdf_payment_success': 'تم الدفع بنجاح! يمكنك الآن تنزيل الدليل.',
                 'pdf_payment_error': 'حدث خطأ أثناء الدفع. يرجى المحاولة مرة أخرى.',
                 'footer_copy': '© 2025 مساعد ترخيص الحيوانات الأليفة لدول مجلس التعاون الخليجي. جميع الحقوق محفوظة.',
@@ -1483,8 +1500,10 @@
                 'pdf_feature5': 'समयरेखा और लागत अनुमान',
                 'pdf_price': 'मूल्य: 3 €',
                 'pdf_thank_you': 'आपकी खरीदारी के लिए धन्यवाद!',
+                'pdf_payment_confirmed': 'आपका भुगतान पुष्टि हो गया है। अब आप अपना गाइड डाउनलोड कर सकते हैं।',
                 'pdf_download_text': 'अपना गाइड डाउनलोड करने के लिए नीचे क्लिक करें:',
                 'pdf_download_btn': 'PDF अभी डाउनलोड करें',
+                'pdf_download_note': 'आप इस गाइड को कभी भी इस पेज से डाउनलोड कर सकते हैं। आपकी खरीदारी सुरक्षित है।',
                 'pdf_payment_success': 'भुगतान सफल! अब आप गाइड डाउनलोड कर सकते हैं।',
                 'pdf_payment_error': 'भुगतान के दौरान एक त्रुटि हुई। कृपया पुनः प्रयास करें।',
                 'footer_copy': '© 2025 जीसीसी पालतू लाइसेंस सहायक। सर्वाधिकार सुरक्षित।',
@@ -1978,8 +1997,11 @@
             const popupClosed = sessionStorage.getItem('pdf_popup_closed');
             
             if (hasPurchased === 'true') {
-                // User has purchased - don't show pop-up, they can download directly
-                // Download link will be available in the pop-up if they open it manually
+                // User has purchased - prepare download section for when they open pop-up
+                // Don't auto-show pop-up, but make it available
+                setTimeout(function() {
+                    showDownloadSection();
+                }, 500);
                 return;
             } else if (popupClosed === 'true') {
                 // User closed pop-up in this session - don't show again
@@ -2049,11 +2071,24 @@
                         localStorage.setItem('gcc_pet_guide_purchase_date', new Date().toISOString());
                         localStorage.setItem('gcc_pet_guide_transaction_id', details.id);
                         
-                        // Show download section in pop-up
+                        // Show download section in pop-up immediately
                         showDownloadSection();
                         
                         // Update language if needed
                         switchLanguage(currentLang);
+                        
+                        // Show success message (more visible)
+                        setTimeout(function() {
+                            const downloadBtn = document.querySelector('.pdf-download-btn');
+                            if (downloadBtn) {
+                                downloadBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                // Highlight the download button
+                                downloadBtn.style.animation = 'pulse 2s ease-in-out infinite';
+                            }
+                        }, 300);
+                    }).catch(function(err) {
+                        console.error('Payment capture error:', err);
+                        alert(getTranslation('pdf_payment_error') || 'Payment was successful but there was an error processing. Please contact support with your PayPal transaction ID.');
                     });
                 },
                 onError: function(err) {
@@ -2072,10 +2107,25 @@
             
             if (downloadSection) {
                 downloadSection.classList.add('show');
+                // Ensure pop-up is visible
+                const popup = document.getElementById('pdf-popup');
+                if (popup) {
+                    popup.classList.remove('pdf-popup-hidden');
+                }
             }
             if (paypalContainer) {
                 paypalContainer.style.display = 'none';
             }
+        }
+        
+        function trackDownload() {
+            // Track download event (can be used for analytics)
+            console.log('PDF download initiated');
+            const transactionId = localStorage.getItem('gcc_pet_guide_transaction_id');
+            if (transactionId) {
+                console.log('Transaction ID:', transactionId);
+            }
+            // Download will happen automatically via the download attribute
         }
         
         function getTranslation(key) {
