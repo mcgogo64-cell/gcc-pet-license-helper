@@ -75,14 +75,6 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4429391480566285"
      crossorigin="anonymous"></script>
     
-    <!-- PayPal SDK -->
-    <!-- IMPORTANT: 
-         - For TESTING: Use Sandbox Client ID (switch to Sandbox mode in PayPal Dashboard)
-         - For PRODUCTION: Switch to Live mode and use Live Client ID
-         - Client ID is SAFE to be visible in code (it's public)
-         - NEVER use Secret in frontend code!
-    -->
-    <script src="https://www.paypal.com/sdk/js?client-id=AYL0iQeBW9MDXaC8Ojry-JWQTiyITJWtgV43lc0YryLd5en3QmW8GjpWzIffyKJXOWrl-mO74SMqNr1D&currency=EUR&disable-funding=credit,card,paylater,venmo,sepa,bancontact,blik,eps,giropay,ideal,mercadopago,mybank,p24"></script>
     
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
@@ -283,191 +275,10 @@
                 font-size: 0.75rem;
             }
         }
-        /* PDF Purchase Pop-up Styles */
-        .pdf-popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            backdrop-filter: blur(4px);
-        }
-        .pdf-popup-hidden {
-            display: none;
-        }
-        .pdf-popup-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            max-width: 600px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-            position: relative;
-            animation: pdfPopupSlideIn 0.3s ease-out;
-        }
-        @keyframes pdfPopupSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-        @keyframes pulse {
-            0%, 100% {
-                box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7);
-            }
-            50% {
-                box-shadow: 0 0 0 10px rgba(13, 148, 136, 0);
-            }
-        }
-        .pdf-popup-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #666;
-            transition: color 0.3s;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-        }
-        .pdf-popup-close:hover {
-            color: #000;
-            background-color: #f3f4f6;
-        }
-        .pdf-popup-title {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #0D9488;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-        .pdf-popup-description {
-            color: #374151;
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-        }
-        .pdf-popup-features {
-            background-color: #F0F9FF;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-        .pdf-popup-features ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .pdf-popup-features li {
-            padding: 0.5rem 0;
-            padding-left: 1.5rem;
-            position: relative;
-        }
-        .pdf-popup-features li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #0D9488;
-            font-weight: bold;
-        }
-        .pdf-popup-price {
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #0D9488;
-            margin-bottom: 1.5rem;
-        }
-        .pdf-paypal-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 1rem;
-        }
-        .pdf-download-section {
-            display: none;
-            text-align: center;
-            padding: 1.5rem;
-            background-color: #ECFDF5;
-            border-radius: 0.5rem;
-            margin-top: 1rem;
-        }
-        .pdf-download-section.show {
-            display: block;
-        }
-        .pdf-download-btn {
-            display: inline-block;
-            background-color: #0D9488;
-            color: white;
-            padding: 0.75rem 2rem;
-            border-radius: 0.5rem;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background-color 0.3s;
-            margin-top: 1rem;
-        }
-        .pdf-download-btn:hover {
-            background-color: #0F766E;
-        }
-        @media (max-width: 640px) {
-            .pdf-popup-content {
-                padding: 1.5rem;
-            }
-            .pdf-popup-title {
-                font-size: 1.5rem;
-            }
-        }
+
     </style>
 </head>
 <body class="bg-amber-50 text-gray-800">
-
-    <!-- PDF Purchase Pop-up -->
-    <div id="pdf-popup" class="pdf-popup-overlay pdf-popup-hidden">
-        <div class="pdf-popup-content">
-            <button class="pdf-popup-close" onclick="closePdfPopup()" aria-label="Close">×</button>
-            <h2 class="pdf-popup-title" data-key="pdf_popup_title">Complete GCC Pet License Guide</h2>
-            <p class="pdf-popup-description" data-key="pdf_popup_description">
-                Get the complete bilingual guide with all solutions and necessary information for GCC Pet License. This comprehensive PDF includes step-by-step instructions, country-specific requirements, and everything you need to know.
-            </p>
-            <div class="pdf-popup-features">
-                <ul>
-                    <li data-key="pdf_feature1">Complete bilingual guide (English & Arabic)</li>
-                    <li data-key="pdf_feature2">Step-by-step instructions</li>
-                    <li data-key="pdf_feature3">Country-specific requirements</li>
-                    <li data-key="pdf_feature4">All necessary documents checklist</li>
-                    <li data-key="pdf_feature5">Timeline and cost estimates</li>
-                </ul>
-            </div>
-            <div class="pdf-popup-price">
-                <span data-key="pdf_price">Price: 3 €</span>
-            </div>
-            <div class="pdf-paypal-container" id="paypal-button-container"></div>
-            <div class="pdf-download-section" id="pdf-download-section">
-                <div style="text-align: center; margin-bottom: 1rem;">
-                    <span style="font-size: 3rem; display: block; margin-bottom: 0.5rem;">✓</span>
-                </div>
-                <p data-key="pdf_thank_you" style="color: #059669; font-weight: 600; margin-bottom: 0.5rem; font-size: 1.25rem;">Thank you for your purchase!</p>
-                <p data-key="pdf_payment_confirmed" style="color: #374151; margin-bottom: 0.5rem; font-size: 0.9rem;">Your payment has been confirmed. You can now download your guide.</p>
-                <p data-key="pdf_download_text" style="color: #374151; margin-bottom: 1rem; font-weight: 500;">Click below to download your guide:</p>
-                <a href="Bilingual GCC Pet Import Guide.pdf" download="GCC_Pet_Import_Guide.pdf" class="pdf-download-btn" data-key="pdf_download_btn" onclick="trackDownload()">Download PDF Now</a>
-                <p data-key="pdf_download_note" style="color: #6B7280; font-size: 0.75rem; margin-top: 1rem;">You can download this guide anytime from this page. Your purchase is saved.</p>
-            </div>
-        </div>
-    </div>
 
     <!-- Header & Navigasyon -->
     <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">
@@ -1927,9 +1738,6 @@
             
             createCharts();
             switchLanguage('en'); // Set default language on load
-            
-            // Initialize PDF pop-up and PayPal
-            initPdfPopup();
 
         });
         
@@ -1987,152 +1795,6 @@
                     console.error('Error updating structured data:', e);
                 }
             });
-        }
-
-        // --- PDF POPUP & PAYPAL INTEGRATION ---
-        
-        function initPdfPopup() {
-            // Check if user has already purchased
-            const hasPurchased = localStorage.getItem('gcc_pet_guide_purchased');
-            const popupClosed = sessionStorage.getItem('pdf_popup_closed');
-            
-            if (hasPurchased === 'true') {
-                // User has purchased - prepare download section for when they open pop-up
-                // Don't auto-show pop-up, but make it available
-                setTimeout(function() {
-                    showDownloadSection();
-                }, 500);
-                return;
-            } else if (popupClosed === 'true') {
-                // User closed pop-up in this session - don't show again
-                return;
-            } else {
-                // Show pop-up after a short delay
-                setTimeout(() => {
-                    showPdfPopup();
-                    initPayPalButton();
-                }, 1500);
-            }
-        }
-        
-        function showPdfPopup() {
-            const popup = document.getElementById('pdf-popup');
-            if (popup) {
-                popup.classList.remove('pdf-popup-hidden');
-                document.body.style.overflow = 'hidden'; // Prevent background scrolling
-            }
-        }
-        
-        function closePdfPopup() {
-            const popup = document.getElementById('pdf-popup');
-            if (popup) {
-                popup.classList.add('pdf-popup-hidden');
-                document.body.style.overflow = ''; // Restore scrolling
-                // Remember that user closed the pop-up (for this session)
-                sessionStorage.setItem('pdf_popup_closed', 'true');
-            }
-        }
-        
-        function initPayPalButton() {
-            // Check if PayPal SDK is loaded
-            if (typeof paypal === 'undefined') {
-                console.error('PayPal SDK not loaded. Please add your PayPal Client ID.');
-                document.getElementById('paypal-button-container').innerHTML = 
-                    '<p style="color: #dc2626; text-align: center;">PayPal button cannot be loaded. Please check your PayPal Client ID.</p>';
-                return;
-            }
-            
-            paypal.Buttons({
-                style: {
-                    layout: 'vertical',
-                    color: 'blue',
-                    shape: 'rect',
-                    label: 'paypal',
-                    tagline: false
-                },
-                createOrder: function(data, actions) {
-                    return actions.order.create({
-                        purchase_units: [{
-                            amount: {
-                                value: '3',
-                                currency_code: 'EUR'
-                            },
-                            description: 'Complete GCC Pet License Guide PDF'
-                        }]
-                    });
-                },
-                onApprove: function(data, actions) {
-                    return actions.order.capture().then(function(details) {
-                        // Payment successful
-                        console.log('Payment successful:', details);
-                        
-                        // Save purchase status to localStorage
-                        localStorage.setItem('gcc_pet_guide_purchased', 'true');
-                        localStorage.setItem('gcc_pet_guide_purchase_date', new Date().toISOString());
-                        localStorage.setItem('gcc_pet_guide_transaction_id', details.id);
-                        
-                        // Show download section in pop-up immediately
-                        showDownloadSection();
-                        
-                        // Update language if needed
-                        switchLanguage(currentLang);
-                        
-                        // Show success message (more visible)
-                        setTimeout(function() {
-                            const downloadBtn = document.querySelector('.pdf-download-btn');
-                            if (downloadBtn) {
-                                downloadBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                // Highlight the download button
-                                downloadBtn.style.animation = 'pulse 2s ease-in-out infinite';
-                            }
-                        }, 300);
-                    }).catch(function(err) {
-                        console.error('Payment capture error:', err);
-                        alert(getTranslation('pdf_payment_error') || 'Payment was successful but there was an error processing. Please contact support with your PayPal transaction ID.');
-                    });
-                },
-                onError: function(err) {
-                    console.error('PayPal error:', err);
-                    alert(getTranslation('pdf_payment_error') || 'An error occurred during payment. Please try again.');
-                },
-                onCancel: function(data) {
-                    console.log('Payment cancelled');
-                }
-            }).render('#paypal-button-container');
-        }
-        
-        function showDownloadSection() {
-            const downloadSection = document.getElementById('pdf-download-section');
-            const paypalContainer = document.getElementById('paypal-button-container');
-            
-            if (downloadSection) {
-                downloadSection.classList.add('show');
-                // Ensure pop-up is visible
-                const popup = document.getElementById('pdf-popup');
-                if (popup) {
-                    popup.classList.remove('pdf-popup-hidden');
-                }
-            }
-            if (paypalContainer) {
-                paypalContainer.style.display = 'none';
-            }
-        }
-        
-        function trackDownload() {
-            // Track download event (can be used for analytics)
-            console.log('PDF download initiated');
-            const transactionId = localStorage.getItem('gcc_pet_guide_transaction_id');
-            if (transactionId) {
-                console.log('Transaction ID:', transactionId);
-            }
-            // Download will happen automatically via the download attribute
-        }
-        
-        function getTranslation(key) {
-            if (translations && translations[currentLang] && translations[currentLang][key]) {
-                return translations[currentLang][key];
-            }
-            return null;
         }
 
 
@@ -2303,5 +1965,8 @@
             document.getElementById('cost-total').textContent = '$' + total.toLocaleString() + ' - $' + (total + 450).toLocaleString();
         }
     </script>
+    
+    <!-- Adsterra Social Bar -->
+    <script type='text/javascript' src='//pl28083937.effectivegatecpm.com/95/eb/4d/95eb4d0a5d4f7a6e6e50f86d397b414e.js'></script>
 </body>
 </html>
